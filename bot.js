@@ -43,8 +43,13 @@ bot.on('message', (message) => {
                 var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
                 WGET(ipfslink, function() {
                     // Adds ipfs hash to queue for manual pinning
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfshash + '\n');   
+                    if (fs.existsSync('hashvalues.txt')) {
+                        var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
+                        fs.writeFileSync('hashvalues.txt', readQueue + ipfshash + '\n');  
+                    } else {
+                        fs.writeFileSync('hashvalues.txt', ipfshash + '\n');
+                    }
+                    
                     message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
                 })
             } else {
