@@ -1,12 +1,10 @@
 const Discord = require('discord.js');
 const WGET = require('node-wget');
-const IPFSAPI = require('ipfs-api');
 const Steem = require('steem');
-
 const Auth = require('./auth.json');
+const fs = require('fs');
 
 const bot = new Discord.Client();
-const ipfs = IPFSAPI();
 
 Steem.api.setOptions({url: 'https://api.steemit.com'});
 
@@ -15,12 +13,6 @@ bot.login(Auth.token);
 bot.on('message', (message) => {
     if (message.content.startsWith('!ping')) {
         message.channel.send('Pong!');
-    } else if (message.content.startsWith('!wget')) {
-
-        WGET('https://video.dtube.top/ipfs/Qme4Ag5LjwNgGb2siGgmR1DCDAwqccpJpYXF1SX6QXe2PZ', function() {
-            message.reply('Download success!');
-        });
-
     } else if (message.content.startsWith('!ipfs ')) {
 
         var command = message.content;
@@ -39,22 +31,28 @@ bot.on('message', (message) => {
                 return;
             }
             
+            // Get JSON metadata of post
             var jsonmeta = JSON.parse(result.json_metadata);
             var appversion = jsonmeta.app.split('/');
             var appname = appversion[0];
             
             if (appname = 'dtube') {
+                // Get IPFS hash of source video file
                 var ipfshash = jsonmeta.video.content.videohash;
-                message.reply('IPFS hash of DTube video obtained. Downloading file...');
+                message.channel.send('IPFS hash obtained. Downloading video...');
                 var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
                 WGET(ipfslink, function() {
-                    message.reply('Download success!');
+                    // Adds ipfs hash to queue for manual pinning
+                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
+                    fs.writeFileSync('hashvalues.txt', readQueue + ipfshash + '\n');   
+                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
                 })
             } else {
                 message.reply('Sorry, this command only supports DTube videos!');
             }
         })
         
+    } else if (message.content == '!ipfshelp') {
+
     }
 });
-
