@@ -45,7 +45,11 @@ bot.on('message', (message) => {
             
             if (appname = 'dtube') {
                 var ipfshash = jsonmeta.video.content.videohash;
-                message.reply('This is a DTube link! IPFS hash: ' + ipfshash + ' :wink:');
+                message.reply('IPFS hash of DTube video obtained. Downloading file...');
+                var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
+                WGET(ipfslink, function() {
+                    message.reply('Download success!');
+                })
             } else {
                 message.reply('Sorry, this command only supports DTube videos!');
             }
