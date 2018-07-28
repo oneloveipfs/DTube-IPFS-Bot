@@ -25,7 +25,7 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 While the IPFS daemon is running, you may run `bash DTubePinFiles.bash` to pin all videos in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
 
-For more info about `crontab` which is built into Linux and macOS, visit [here](https://kvz.io/blog/2007/07/29/schedule-tasks-on-linux-using-crontab/).
+For more info about `crontab` which is built into Linux and macOS, visit [here](https://gist.github.com/mkaz/69066bd0c5e45515a264).
 
 # Links support
 
