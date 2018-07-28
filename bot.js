@@ -62,7 +62,7 @@ bot.on('message', (message) => {
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
 
-        if ((command.startsWith('!ipfs https://steemit.com/')) || (command.startsWith('!ipfs https://busy.org/'))) {
+        if ((command.startsWith('!ipfs240 https://steemit.com/')) || (command.startsWith('!ipfs240 https://busy.org/'))) {
             // Remove @ symbol if it is a steemit/busy link
             author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
         }
@@ -103,7 +103,7 @@ bot.on('message', (message) => {
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
 
-        if ((command.startsWith('!ipfs https://steemit.com/')) || (command.startsWith('!ipfs https://busy.org/'))) {
+        if ((command.startsWith('!ipfs480 https://steemit.com/')) || (command.startsWith('!ipfs480 https://busy.org/'))) {
             // Remove @ symbol if it is a steemit/busy link
             author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
         }
