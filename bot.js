@@ -38,7 +38,12 @@ bot.on('message', (message) => {
             var ipfshash = jsonmeta.video.content.videohash;
             message.channel.send('IPFS hash obtained. Downloading video...');
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
-            WGET(ipfslink, function() {
+            WGET(ipfslink, function(err) {
+                if (err != null) {
+                    message.reply('WGET Error: ' + err);
+                    return;
+                }
+
                 // Adds ipfs hash to queue for manual pinning
                 if (fs.existsSync('hashvalues.txt')) {
                     var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
@@ -52,6 +57,12 @@ bot.on('message', (message) => {
         })
         
     } else if (message.content == '!ipfshelp') {
-        
+        var embed = new Discord.RichEmbed();
+        embed.setTitle('DTube IPFS Bot Command Cheatsheet')
+        embed.addField('!ipfs <link>', 'Fetches DTube video from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
+        embed.addField('!ipfshelp', 'Shows this cheatsheet with all available commands for this bot');
+        embed.addField('!ping', 'Gets the bot to reply with "Pong!"');
+        embed.setColor(0x499293);
+        message.channel.send(embed);
     }
 });
