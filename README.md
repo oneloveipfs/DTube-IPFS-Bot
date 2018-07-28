@@ -21,6 +21,12 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 3. Run `node bot.js` to start the Discord bot.
 
+Use the link below to invite the bot to your Discord server:
+
+`https://discordapp.com/oauth2/authorize?client_id=YOURCLIENTID&scope=bot&permissions=248897`
+
+(where `YOURCLIENTID` is the client ID of your Discord application)
+
 # Pinning IPFS files
 
 While the IPFS daemon is running, you may run `bash DTubePinFiles.bash` to pin all videos in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
