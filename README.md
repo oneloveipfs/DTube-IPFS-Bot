@@ -19,7 +19,7 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 2. Insert the Discord bot token in `auth.json` file.
 
-3. Run `node bot.js` to start the Discord bot.
+3. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
 
 Use the link below to invite the bot to your Discord server:
 
