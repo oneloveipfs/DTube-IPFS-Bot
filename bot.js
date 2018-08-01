@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const WGET = require('wget-improved');
 const Steem = require('steem');
 const Auth = require('./auth.json');
+const Config = require('./config.json');
 const fs = require('fs');
 
 const bot = new Discord.Client();
@@ -19,7 +20,7 @@ bot.on('message', (message) => {
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
 
-        if ((command.startsWith('!ipfs https://steemit.com/')) || (command.startsWith('!ipfs https://busy.org/'))) {
+        if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
             author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
         }
@@ -72,7 +73,7 @@ bot.on('message', (message) => {
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
 
-        if ((command.startsWith('!ipfs240 https://steemit.com/')) || (command.startsWith('!ipfs240 https://busy.org/'))) {
+        if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
             author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
         }
@@ -124,7 +125,7 @@ bot.on('message', (message) => {
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
 
-        if ((command.startsWith('!ipfs480 https://steemit.com/')) || (command.startsWith('!ipfs480 https://busy.org/'))) {
+        if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
             author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
         }
@@ -165,19 +166,77 @@ bot.on('message', (message) => {
                 } else {
                     fs.writeFileSync('hashvalues.txt', ipfs480hash + '\n');
                 }
-                  
+                
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
             });
         });
+    } else if (message.content == '!botintro') {
+        message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
+    } else if (message.content.startsWith('!donate ')) {
+        // Generates SteemConnect donate link to community account (e.g. to cover server costs etc)
+        var account = Config.communityAccount;
+
+        if (account == "") {
+            message.channel.send('Discord community account not set yet!');
+            return;
+        }
+
+        Steem.api.getAccounts([account],function(err,result) {
+            if (err != null) {
+                // Error handling
+                message.channel.send('Error checking account: ' + err);
+                return;
+            } else if (isEmptyObject(result)) {
+                // Community Steem account entered in config.json doesn't exist
+                message.channel.send("Community account entered in config doesn't exist!");
+                return;
+            }
+
+            // Generates SteemConnect donate link to community account
+            var crypto = message.content.split(' ').slice(-2);
+            var currency = crypto[0];
+            var amount = crypto[1];
+
+            if (isNaN(amount) == false) {
+                switch (currency) {
+                  case 'steem':
+                        var donatelink = 'https://steemconnect.com/sign/transfer?to=' + account + '&amount=' + amount + '%20STEEM&memo=IPFS%%20Bot%20Donation';
+                        message.channel.send('__***Support the community for hosting the bot and IPFS files with STEEM donations by clicking on the link below:***__ \n' + donatelink);
+                      break;
+                    case 'sbd':
+                        var donatelink = 'https://steemconnect.com/sign/transfer?to=' + account + '&amount=' + amount + '%20SBD&memo=IPFS%20Bot%20Donation';
+                        message.channel.send('__***Support the community for hosting the bot and IPFS files with SBD donations by clicking on the link below:***__ \n' + donatelink);
+                        break;
+                    default:
+                        message.channel.send('Invalid currency entered!');
+                        break;
+                }
+            } else {
+                message.channel.send('Invalid amount entered!');
+            }
+        });
+        
     } else if (message.content == '!ipfshelp') {
+        // Bot command list
         var embed = new Discord.RichEmbed();
         embed.setTitle('DTube IPFS Bot Command Cheatsheet');
         embed.addField('!ipfs <link>', 'Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs240 <link>', 'Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
+        embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
+        embed.addField('!donate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
         embed.addField('!ipfshelp', 'Shows this cheatsheet with all available commands for this bot');
         embed.addField('!ping', 'Gets the bot to reply with "Pong!"');
         embed.setColor(0x499293);
         message.channel.send(embed);
     }
 });
+
+function isEmptyObject(obj) {
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        return false;
+      }
+    }
+    return true;
+  }
