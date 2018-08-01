@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const WGET = require('node-wget');
+const WGET = require('wget-improved');
 const Steem = require('steem');
 const Auth = require('./auth.json');
 const fs = require('fs');
@@ -38,12 +38,22 @@ bot.on('message', (message) => {
             var ipfshash = jsonmeta.video.content.videohash;
             message.channel.send('IPFS hash obtained. Fetching video...');
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
-            WGET(ipfslink, function(err) {
-                if (err != null) {
-                    message.reply('WGET Error: ' + err);
-                    return;
-                }
 
+            // Download file to server!
+            let download = WGET.download(ipfslink,'./' + ipfshash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get file size in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Video file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
                 if (fs.existsSync('hashvalues.txt')) {
                     var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
@@ -80,12 +90,22 @@ bot.on('message', (message) => {
             var ipfs240hash = jsonmeta.video.content.video240hash;
             message.channel.send('240p IPFS hash obtained. Fetching video...');
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
-            WGET(ipfslink, function(err) {
-                if (err != null) {
-                    message.reply('WGET Error: ' + err);
-                    return;
-                }
 
+            // Download file to server!
+            let download = WGET.download(ipfslink,'./' + ipfs240hash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get file size in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Video file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
                 if (fs.existsSync('hashvalues.txt')) {
                     var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
@@ -96,6 +116,7 @@ bot.on('message', (message) => {
                   
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
             });
+            
         });
     } else if (message.content.startsWith('!ipfs480 ')) {
         // 480p video
@@ -121,12 +142,22 @@ bot.on('message', (message) => {
             var ipfs480hash = jsonmeta.video.content.video480hash;
             message.channel.send('480p IPFS hash obtained. Fetching video...');
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
-            WGET(ipfslink, function(err) {
-                if (err != null) {
-                    message.reply('WGET Error: ' + err);
-                    return;
-                }
 
+            // Download file to server!
+            let download = WGET.download(ipfslink,'./' + ipfs480hash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get file size in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Video file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
                 if (fs.existsSync('hashvalues.txt')) {
                     var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
@@ -134,13 +165,13 @@ bot.on('message', (message) => {
                 } else {
                     fs.writeFileSync('hashvalues.txt', ipfs480hash + '\n');
                 }
-                
+                  
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
             });
         });
     } else if (message.content == '!ipfshelp') {
         var embed = new Discord.RichEmbed();
-        embed.setTitle('DTube IPFS Bot Command Cheatsheet')
+        embed.setTitle('DTube IPFS Bot Command Cheatsheet');
         embed.addField('!ipfs <link>', 'Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs240 <link>', 'Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
