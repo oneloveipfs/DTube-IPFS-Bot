@@ -216,6 +216,30 @@ bot.on('message', (message) => {
             }
         });
         
+    } else if (message.content.startsWith('!devdonate ')) {
+        // Generates SteemConnect donate link to developer
+        var crypto = message.content.split(' ').slice(-2);
+        var currency = crypto[0];
+        var amount = crypto[1];
+
+        if (isNaN(amount) == false) {
+            switch (currency) {
+                case 'steem':
+                    var donatelink = 'https://steemconnect.com/sign/transfer?to=techcoderx&amount=' + amount + '%20STEEM&memo=IPFS%20Discord%20Bot%20Dev%20Donation';
+                    message.channel.send('__***Support the development of the bot with STEEM donations by clicking on the link below:***__ \n' + donatelink);
+                    break;
+                case 'sbd':
+                    var donatelink = 'https://steemconnect.com/sign/transfer?to=techcoderx&amount=' + amount + '%20SBD&memo=IPFS%20Discord%20Bot%20Dev%20Donation';
+                    message.channel.send('__***Support the development of the bot with SBD donations by clicking on the link below:***__ \n' + donatelink);
+                    break;
+                default:
+                    message.channel.send('Invalid currency entered!');
+                    break;
+            }
+        } else {
+            message.channel.send('Invalid amount entered!');
+        }
+        
     } else if (message.content == '!ipfshelp') {
         // Bot command list
         var embed = new Discord.RichEmbed();
@@ -225,6 +249,7 @@ bot.on('message', (message) => {
         embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
         embed.addField('!donate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
+        embed.addField('!devdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
         embed.addField('!ipfshelp', 'Shows this cheatsheet with all available commands for this bot');
         embed.addField('!ping', 'Gets the bot to reply with "Pong!"');
         embed.setColor(0x499293);
