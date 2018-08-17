@@ -400,6 +400,7 @@ bot.on('message', (message) => {
         embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs720 <link>', 'Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs1080 <link>', 'Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
+        embed.addField('!ipfssound <link>', 'Fetches DSound audio file from ipfs.io and adds to IPFS file pinning queue. This command only supports DSound audio!');
         embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
         embed.addField('!ipfsdonate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
         embed.addField('!ipfsdevdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
