@@ -66,7 +66,6 @@ bot.on('message', (message) => {
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
             });
         });
-        
     } else if (message.content.startsWith('!ipfs240 ')) {
         // 240p video
         var command = message.content;
@@ -170,6 +169,108 @@ bot.on('message', (message) => {
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
             });
         });
+    } else if (message.content.startsWith('!ipfs720 ')) {
+        // 720p video
+        var command = message.content;
+        var steemitAuthorPermlink = command.split('/').slice(-2);
+        var author = steemitAuthorPermlink[0];
+
+        if (author.startsWith('@')) {
+            // Remove @ symbol if it is a steemit/busy link
+            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+        }
+        
+        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
+            
+            if (err != null) {
+                message.reply('Error:' + err);
+                return;
+            }
+            
+            // Get JSON metadata of post
+            var jsonmeta = JSON.parse(result.json_metadata);
+
+            var ipfs720hash = jsonmeta.video.content.video720hash;
+            message.channel.send('720p IPFS hash obtained. Fetching video...');
+            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
+
+            // Download file to server!
+            let download = WGET.download(ipfslink,'./' + ipfs720hash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get file size in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Video file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
+                // Adds ipfs hash to queue for manual pinning
+                if (fs.existsSync('hashvalues.txt')) {
+                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
+                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs720hash + '\n');  
+                } else {
+                    fs.writeFileSync('hashvalues.txt', ipfs720hash + '\n');
+                }
+                
+                message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+            });
+        });
+    } else if (message.content.startsWith('!ipfs1080 ')) {
+        // 1080p video
+        var command = message.content;
+        var steemitAuthorPermlink = command.split('/').slice(-2);
+        var author = steemitAuthorPermlink[0];
+
+        if (author.startsWith('@')) {
+            // Remove @ symbol if it is a steemit/busy link
+            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+        }
+        
+        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
+            
+            if (err != null) {
+                message.reply('Error:' + err);
+                return;
+            }
+            
+            // Get JSON metadata of post
+            var jsonmeta = JSON.parse(result.json_metadata);
+
+            var ipfs1080hash = jsonmeta.video.content.video1080hash;
+            message.channel.send('1080p IPFS hash obtained. Fetching video...');
+            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
+
+            // Download file to server!
+            let download = WGET.download(ipfslink,'./' + ipfs1080hash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get file size in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Video file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
+                // Adds ipfs hash to queue for manual pinning
+                if (fs.existsSync('hashvalues.txt')) {
+                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
+                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs1080hash + '\n');  
+                } else {
+                    fs.writeFileSync('hashvalues.txt', ipfs1080hash + '\n');
+                }
+                
+                message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+            });
+        });
     } else if (message.content == '!botintro') {
         message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
     } else if (message.content.startsWith('!donate ')) {
@@ -247,6 +348,8 @@ bot.on('message', (message) => {
         embed.addField('!ipfs <link>', 'Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs240 <link>', 'Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
+        embed.addField('!ipfs720 <link>', 'Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
+        embed.addField('!ipfs1080 <link>', 'Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
         embed.addField('!donate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
         embed.addField('!devdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
@@ -264,4 +367,4 @@ function isEmptyObject(obj) {
       }
     }
     return true;
-  }
+}
