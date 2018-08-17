@@ -2,5 +2,4 @@ echo 'Adding DTube videos in queue to IPFS node'
 while read h; do
     ipfs add $h -t
     ipfs pin add $h
-done < hashvalues.txt
-bash cleanup.bash
+done < dtubehashvalues.txt

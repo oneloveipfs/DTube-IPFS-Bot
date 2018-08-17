@@ -56,11 +56,11 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
-                if (fs.existsSync('hashvalues.txt')) {
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfshash + '\n');  
+                if (fs.existsSync('dtubehashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
+                    fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfshash + '\n');  
                 } else {
-                    fs.writeFileSync('hashvalues.txt', ipfshash + '\n');
+                    fs.writeFileSync('dtubehashvalues.txt', ipfshash + '\n');
                 }
                   
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
@@ -107,11 +107,11 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
-                if (fs.existsSync('hashvalues.txt')) {
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs240hash + '\n');  
+                if (fs.existsSync('dtubehashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
+                    fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs240hash + '\n');  
                 } else {
-                    fs.writeFileSync('hashvalues.txt', ipfs240hash + '\n');
+                    fs.writeFileSync('dtubehashvalues.txt', ipfs240hash + '\n');
                 }
                   
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
@@ -159,11 +159,11 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
-                if (fs.existsSync('hashvalues.txt')) {
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs480hash + '\n');  
+                if (fs.existsSync('dtubehashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
+                    fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs480hash + '\n');  
                 } else {
-                    fs.writeFileSync('hashvalues.txt', ipfs480hash + '\n');
+                    fs.writeFileSync('dtubehashvalues.txt', ipfs480hash + '\n');
                 }
                 
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
@@ -210,11 +210,11 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
-                if (fs.existsSync('hashvalues.txt')) {
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs720hash + '\n');  
+                if (fs.existsSync('dtubehashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
+                    fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs720hash + '\n');  
                 } else {
-                    fs.writeFileSync('hashvalues.txt', ipfs720hash + '\n');
+                    fs.writeFileSync('dtubehashvalues.txt', ipfs720hash + '\n');
                 }
                 
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
@@ -261,11 +261,11 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 // Adds ipfs hash to queue for manual pinning
-                if (fs.existsSync('hashvalues.txt')) {
-                    var readQueue = fs.readFileSync('hashvalues.txt', 'utf8');
-                    fs.writeFileSync('hashvalues.txt', readQueue + ipfs1080hash + '\n');  
+                if (fs.existsSync('dtubehashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
+                    fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs1080hash + '\n');  
                 } else {
-                    fs.writeFileSync('hashvalues.txt', ipfs1080hash + '\n');
+                    fs.writeFileSync('dtubehashvalues.txt', ipfs1080hash + '\n');
                 }
                 
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');

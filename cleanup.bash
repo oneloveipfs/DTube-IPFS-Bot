@@ -1,2 +1,3 @@
-echo -n > hashvalues.txt
+echo -n > dtubehashvalues.txt
+echo -n > dsoundhashvalues.txt
 rm Qm*
