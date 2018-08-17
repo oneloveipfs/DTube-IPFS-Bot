@@ -273,7 +273,7 @@ bot.on('message', (message) => {
         });
     } else if (message.content == '!botintro') {
         message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
-    } else if (message.content.startsWith('!donate ')) {
+    } else if (message.content.startsWith('!ipfsdonate ')) {
         // Generates SteemConnect donate link to community account (e.g. to cover server costs etc)
         var account = Config.communityAccount;
 
@@ -317,7 +317,7 @@ bot.on('message', (message) => {
             }
         });
         
-    } else if (message.content.startsWith('!devdonate ')) {
+    } else if (message.content.startsWith('!ipfsdevdonate ')) {
         // Generates SteemConnect donate link to developer
         var crypto = message.content.split(' ').slice(-2);
         var currency = crypto[0];
@@ -351,8 +351,8 @@ bot.on('message', (message) => {
         embed.addField('!ipfs720 <link>', 'Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!ipfs1080 <link>', 'Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
         embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
-        embed.addField('!donate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
-        embed.addField('!devdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
+        embed.addField('!ipfsdonate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
+        embed.addField('!ipfsdevdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
         embed.addField('!ipfshelp', 'Shows this cheatsheet with all available commands for this bot');
         embed.addField('!ping', 'Gets the bot to reply with "Pong!"');
         embed.setColor(0x499293);
