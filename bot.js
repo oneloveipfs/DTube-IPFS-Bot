@@ -28,7 +28,7 @@ bot.on('message', (message) => {
         Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
             
             if (err != null) {
-                message.reply('Error:' + err);
+                message.reply('Error: ' + err);
                 return;
             }
             
@@ -80,7 +80,7 @@ bot.on('message', (message) => {
         Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
             
             if (err != null) {
-                message.reply('Error:' + err);
+                message.reply('Error: ' + err);
                 return;
             }
             
@@ -132,7 +132,7 @@ bot.on('message', (message) => {
         Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
             
             if (err != null) {
-                message.reply('Error:' + err);
+                message.reply('Error: ' + err);
                 return;
             }
             
@@ -183,7 +183,7 @@ bot.on('message', (message) => {
         Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
             
             if (err != null) {
-                message.reply('Error:' + err);
+                message.reply('Error: ' + err);
                 return;
             }
             
@@ -234,7 +234,7 @@ bot.on('message', (message) => {
         Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
             
             if (err != null) {
-                message.reply('Error:' + err);
+                message.reply('Error: ' + err);
                 return;
             }
             
@@ -269,6 +269,56 @@ bot.on('message', (message) => {
                 }
                 
                 message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+            });
+        });
+    } else if (message.content.startsWith('!ipfssound ')) {
+        // DSound audio
+        var command = message.content;
+        var steemitAuthorPermlink = command.split('/').slice(-2);
+        var author = steemitAuthorPermlink[0];
+
+        if (author.startsWith('@')) {
+            // Remove @ symbol if it is a steemit/busy link
+            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+        }
+
+        Steem.api.getContent(author,steemitAuthorPermlink[1],function(err,result) {
+            if (err != null) {
+                message.reply('Error: ' + err);
+                return;
+            }
+
+            // Get JSON metadata of post
+            var jsonmeta = JSON.parse(result.json_metadata);
+
+            var dsoundhash = jsonmeta.audio.files.sound;
+            message.channel.send('DSound audio IPFS hash obtained. Fetching video...');
+            var dsoundipfslink = 'https://ipfs.io/ipfs/' + dsoundhash;
+
+            // Download video to server!
+            let download = WGET.download(dsoundipfslink,'./' + dsoundhash);
+
+            download.on('error',function(err) {
+                // Download error
+                message.channel.send('Error downloading file: ' + err);
+            });
+
+            download.on('start',function(filesize) {
+                // Get filesize in MB
+                var humanreadableFS = (filesize / 1048576).toFixed(2);
+                message.channel.send('Audio file size: ' + humanreadableFS + 'MB');
+            });
+
+            download.on('end',function() {
+                // Adds ipfs hash to queue for manual pinning
+                if (fs.existsSync('dsoundhashvalues.txt')) {
+                    var readQueue = fs.readFileSync('dsoundhashvalues.txt', 'utf8');
+                    fs.writeFileSync('dsoundhashvalues.txt', readQueue + dsoundhash + '\n');
+                } else {
+                    fs.writeFileSync('dsoundhashvalues.txt', dsoundhash + '\n');
+                }
+                
+                message.reply('Audio downloaded successfully, and added to IPFS manual pinning queue.');
             });
         });
     } else if (message.content == '!botintro') {
