@@ -1,6 +1,6 @@
 # DTube IPFS Discord Bot
 
-DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of a DTube video at a specified resolution, fetches the video and pins video to local IPFS node (where this bot is hosted).
+DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of a DTube video at a specified resolution, fetches the video and pins video to local IPFS node (where this bot is hosted). Also pins DSound audio files.
 
 #### Dependencies required
 
@@ -29,13 +29,13 @@ Use the link below to invite the bot to your Discord server:
 
 # Pinning IPFS files
 
-While the IPFS daemon is running, you may run `bash DTubePinFiles.bash` to pin all videos in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
+While the IPFS daemon is running, you may run `bash PinFiles.bash` to pin all video and audio files in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
 
 For more info about `crontab` which is built into Linux and macOS, visit [here](https://gist.github.com/mkaz/69066bd0c5e45515a264).
 
 # Links support
 
-The Discord bot command supports `d.tube`, `steemit.com` and `busy.org` links. However, this bot only supports DTube videos at the moment. More platform support coming in the next few updates.
+The Discord bot command supports `d.tube`, `dsound.audio`, `steemit.com` and `busy.org` links. However, this bot only supports DTube videos and DSound audios at the moment. More platform support coming in the next few updates.
 
 # How to contribute
 
