@@ -351,7 +351,7 @@ bot.on('message', (message) => {
             if (isNaN(amount) == false) {
                 switch (currency) {
                   case 'steem':
-                        var donatelink = 'https://steemconnect.com/sign/transfer?to=' + account + '&amount=' + amount + '%20STEEM&memo=IPFS%%20Bot%20Donation';
+                        var donatelink = 'https://steemconnect.com/sign/transfer?to=' + account + '&amount=' + amount + '%20STEEM&memo=IPFS%20Bot%20Donation';
                         message.channel.send('__***Support the community for hosting the bot and IPFS files with STEEM donations by clicking on the link below:***__ \n' + donatelink);
                       break;
                     case 'sbd':
