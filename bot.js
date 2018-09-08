@@ -698,16 +698,6 @@ bot.on('message', (message) => {
         } else {
             message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
         }
-        
-    } else if (message.content == Config.commandPrefix + 'readMyHashes') {
-        let uid = message.member.id;
-                if (fs.existsSync('Creators/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('Creators/' + uid + '.txt');
-                    console.log(readData);
-                } else {
-                    fs.writeFileSync('Creators/' + uid + '.txt', ' ');
-                    console.log('file written to disk');
-                }
     }
 });
 
