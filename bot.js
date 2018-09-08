@@ -467,7 +467,7 @@ bot.on('message', (message) => {
             message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
         }
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfsdonate ')) {
-        if (Config.silentModeEnabled != true) {
+        if (Config.silentModeEnabled != true && Config.donationsAccepted == true) {
             // Generates SteemConnect donate link to community account (e.g. to cover server costs etc)
             var account = Config.communityAccount;
 
@@ -512,7 +512,7 @@ bot.on('message', (message) => {
             });
         }
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfsdevdonate ')) {
-        if (Config.silentModeEnabled != true) {
+        if (Config.silentModeEnabled != true && Config.donationsAccepted == true) {
             // Generates SteemConnect donate link to developer
             var crypto = message.content.split(' ').slice(-2);
             var currency = crypto[0];
@@ -621,12 +621,34 @@ bot.on('message', (message) => {
             embed.addField(Config.commandPrefix + 'ipfs1080 <link>', Config.HELP_IPFS1080);
             embed.addField(Config.commandPrefix + 'ipfssound <link>', Config.HELP_IPFSSOUND);
             embed.addField(Config.commandPrefix + 'botintro', Config.BOTINTRO);
-            embed.addField(Config.commandPrefix + 'ipfsdonate <currency> <amount>', Config.HELP_IPFSDONATE);
-            embed.addField(Config.commandPrefix + 'ipfsdevdonate <currency> <amount>', Config.HELP_IPFSDEVDONATE);
+
+            if (Config.donationsAccepted == true) {
+                embed.addField(Config.commandPrefix + 'ipfsdonate <currency> <amount>', Config.HELP_IPFSDONATE);
+                embed.addField(Config.commandPrefix + 'ipfsdevdonate <currency> <amount>', Config.HELP_IPFSDEVDONATE);
+            }
+
+            if (Config.hdwhitelistEnabled == true) {
+                embed.addField(Config.commandPrefix + 'hdwhitelist check', Config.HELP_WHITELIST_CHECK);
+            }
+
             embed.addField(Config.commandPrefix + 'ipfshelp', Config.HELP_IPFSHELP);
             embed.addField(Config.commandPrefix + 'ping', Config.HELP_PING);
             embed.setColor(0x499293);
             message.channel.send(embed);
+        }
+    } else if (message.content == (Config.commandPrefix + 'ipfsadminhelp')) {
+        // Bot command list for admins only
+        if (Config.hdwhitelistEnabled == true) {
+            var adminEmbed = new Discord.RichEmbed();
+            adminEmbed.setTitle('DTube IPFS Bot Command Cheatsheet for admins');
+            adminEmbed.addField(Config.commandPrefix + 'hdwhitelist add <user>', Config.ADMIN_HELP_WHITELIST_ADD);
+            adminEmbed.addField(Config.commandPrefix + 'hdwhitelist rm <user>', Config.ADMIN_HELP_WHITELIST_RM);
+            adminEmbed.addField(Config.commandPrefix + 'hdwhitelist ls <user>', Config.ADMIN_HELP_WHITELIST_LS);
+            adminEmbed.addField(Config.commandPrefix + 'ipfsadminhelp', Config.ADMIN_HELP_LIST);
+            adminEmbed.setColor(0x499293);
+            message.member.send(adminEmbed);
+        } else {
+            message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
         }
     }
 });

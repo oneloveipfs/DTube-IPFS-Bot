@@ -2,7 +2,8 @@
     "____BotSettings____": "Insert bot config info here",
     "communityAccount": "",
     "silentModeEnabled": false,
-    "hdwhitelistEnabled": false,
+    "hdwhitelistEnabled": true,
+    "donationsAccepted": true,
     "commandPrefix": "!",
 
     "___BotOutputMessage___": "Insert bot message output here",
@@ -32,6 +33,7 @@
     "HELP_BOTINTRO": "Posts a link to the introtroduceyourself Steemit post about the bot.",
     "HELP_IPFSDONATE": "Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!",
     "HELP_IPFSDEVDONATE": "Support the development of the bot by donating STEEM/SBD to developer!",
+    "HELP_WHITELIST_CHECK": "Check if you're in the whitelist!",
     "HELP_IPFSHELP": "Shows this cheatsheet with all available commands for this bot.",
     "HELP_PING": "Use this to check if bots are online!",
     "WHITELIST_FILE404": "Hmmm the whitelist file doesn't exist in this bot. Perhaps the file could have been misplaced in the bot server? :thinking:",
@@ -40,5 +42,10 @@
     "WHITELIST_ADD_SUCCESS": "has been added to the IPFS whitelist successfully!",
     "WHITELIST_RM_SUCCESS": "has been removed from the whitelist successfully!",
     "WHITELIST_RM_UID404": "User that you're trying to remove is already not in the whitelist. What are you trying to do:question:",
-    "WHITELIST_ALREADY_IN": "User is already in the whitelist! What are you trying to do:question:"
+    "WHITELIST_ALREADY_IN": "User is already in the whitelist! What are you trying to do:question:",
+    "ADMIN_HELP_WHITELIST_FALSE": "Admin help is only available if whitelisting system is enabled in config.json!",
+    "ADMIN_HELP_WHITELIST_ADD": "Adds a user to the whitelist by Discord user ID.",
+    "ADMIN_HELP_WHITELIST_RM": "Removes a user from the whitelist by Discord user ID.",
+    "ADMIN_HELP_WHITELIST_LS": "Lists all users from the whitelist.",
+    "ADMIN_HELP_LIST": "Shows this cheatsheet with all commands available to admins only for this bot."
 }
