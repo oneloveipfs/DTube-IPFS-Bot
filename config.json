@@ -16,6 +16,10 @@
     "AUDIO_DOWNLOAD_COMPLETE": "Audio downloaded successfully, and added to IPFS manual pinning queue.",
     "ERROR_STEEM_GETCONTENT": "Error: ",
     "ERROR_DOWNLOAD": "Error downloading file: ",
+    "ERROR_INVALID_CURRENCY": "Invalid currency entered!",
+    "ERROR_INVALID_AMOUNT": "Invalid amount entered!",
+    "ERROR_COMMUNITYACCOUNT_NOTSET": "Discord community account not set yet!",
+    "ERROR_COMMUNITYACCOUNT404": "Community account entered in config doesn't exist!",
     "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
@@ -26,5 +30,10 @@
     "HELP_IPFSDONATE": "Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!",
     "HELP_IPFSDEVDONATE": "Support the development of the bot by donating STEEM/SBD to developer!",
     "HELP_IPFSHELP": "Shows this cheatsheet with all available commands for this bot.",
-    "HELP_PING": "Use this to check if bots are online!"
+    "HELP_PING": "Use this to check if bots are online!",
+    "WHITELIST_FILE404": "Hmmm the whitelist file doesn't exist in this bot. Perhaps the file could have been misplaced in the bot server? :thinking:",
+    "WHITELIST_TRUE": "You're in the whitelist! You may pin your DTube videos at 720p, 1080p and source resolution to our IPFS node :wink:",
+    "WHITELIST_FALSE": "Sorry, you're not in the whitelist. Perhaps contact the admins of this server to find out how to get there? :thinking:",
+    "WHITELIST_ADD_SUCCESS": "has been added to the IPFS whitelist successfully!",
+    "WHITELIST_ALREADY_IN": "User is already in the whitelist! What are you trying to do:question:"
 }

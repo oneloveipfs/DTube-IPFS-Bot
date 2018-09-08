@@ -430,7 +430,7 @@ bot.on('message', (message) => {
             var account = Config.communityAccount;
 
             if (account == "") {
-                message.channel.send('Discord community account not set yet!');
+                message.channel.send(Config.ERROR_COMMUNITYACCOUNT_NOTSET);
                 return;
             }
 
@@ -441,7 +441,7 @@ bot.on('message', (message) => {
                     return;
                 } else if (isEmptyObject(result)) {
                     // Community Steem account entered in config.json doesn't exist
-                    message.channel.send("Community account entered in config doesn't exist!");
+                    message.channel.send(Config.ERROR_COMMUNITYACCOUNT404);
                     return;
                 }
 
@@ -461,11 +461,11 @@ bot.on('message', (message) => {
                             message.channel.send('__***Support the community for hosting the bot and IPFS files with SBD donations by clicking on the link below:***__ \n' + donatelink);
                             break;
                         default:
-                            message.channel.send('Invalid currency entered!');
+                            message.channel.send(Config.ERROR_INVALID_CURRENCY);
                             break;
                     }
                 } else {
-                    message.channel.send('Invalid amount entered!');
+                    message.channel.send(Config.ERROR_INVALID_AMOUNT);
                 }
             });
         }
@@ -487,12 +487,40 @@ bot.on('message', (message) => {
                         message.channel.send('__***Support the development of the bot with SBD donations by clicking on the link below:***__ \n' + donatelink);
                         break;
                     default:
-                        message.channel.send('Invalid currency entered!');
+                        message.channel.send(Config.ERROR_INVALID_CURRENCY);
                         break;
                 }
             } else {
-                message.channel.send('Invalid amount entered!');
+                message.channel.send(Config.ERROR_INVALID_CURRENCY);
             }
+        }
+    } else if (message.content == (Config.commandPrefix + 'hdwhitelist check')) {
+        if (fs.existsSync('HDWhitelist.txt')) {
+            var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+            if (readList.includes(message.author.id) == true) {
+                message.reply(Config.WHITELIST_TRUE);
+            } else {
+                message.reply(Config.WHITELIST_FALSE);
+            }
+        } else {
+            message.channel.send(Config.WHITELIST_FILE404);
+        }
+    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist add ')) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            let uidToWhitelist = message.mentions.members.first().user.id;
+
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(uidToWhitelist) == true) {
+                    message.channel.send(Config.WHITELIST_ALREADY_IN);
+                    return;
+                }
+                fs.writeFileSync('HDWhitelist.txt', readList + uidToWhitelist + '\n');
+            } else {
+                fs.writeFileSync('HDWhitelist.txt', uidToWhitelist + '\n');
+            }
+
+            message.channel.send('<@' + uidToWhitelist + '> ' + Config.WHITELIST_ADD_SUCCESS);
         }
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
