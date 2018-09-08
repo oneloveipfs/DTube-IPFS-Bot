@@ -25,6 +25,20 @@ bot.on('message', (message) => {
         message.channel.send(Config.PING_REPLY);
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs ')) {
         // Source video
+        if (Config.hdwhitelistEnabled == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(message.author.id) != true) {
+                    // Do not proceed if user is not in whitelist
+                    message.channel.send(Config.ERROR_NO_PIN_PERMISSION);
+                    return;
+                }
+            } else {
+                message.channel.send(Config.WHITELIST_FILE404);
+                return;
+            }
+        }
+
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
@@ -225,6 +239,20 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
+        if (Config.hdwhitelistEnabled == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(message.author.id) != true) {
+                    // Do not proceed if user is not in whitelist
+                    message.channel.send(Config.ERROR_NO_PIN_PERMISSION);
+                    return;
+                }
+            } else {
+                message.channel.send(Config.WHITELIST_FILE404);
+                return;
+            }
+        }
+
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
@@ -291,6 +319,20 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
+        if (Config.hdwhitelistEnabled == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(message.author.id) != true) {
+                    // Do not proceed if user is not in whitelist
+                    message.channel.send(Config.ERROR_NO_PIN_PERMISSION);
+                    return;
+                }
+            } else {
+                message.channel.send(Config.WHITELIST_FILE404);
+                return;
+            }
+        }
+
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
         var author = steemitAuthorPermlink[0];
@@ -547,6 +589,7 @@ bot.on('message', (message) => {
             message.channel.send(Config.ERROR_NO_PERMISSION);
         }
     } else if (message.content == (Config.commandPrefix + 'hdwhitelist ls')) {
+        // List all users in whitelist in DM
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
             if (fs.existsSync('HDWhitelist.txt')) {
                 var readList = fs.readFileSync('HDWhiteList.txt', 'utf8');

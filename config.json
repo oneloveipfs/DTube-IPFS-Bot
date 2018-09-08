@@ -2,6 +2,7 @@
     "____BotSettings____": "Insert bot config info here",
     "communityAccount": "",
     "silentModeEnabled": false,
+    "hdwhitelistEnabled": false,
     "commandPrefix": "!",
 
     "___BotOutputMessage___": "Insert bot message output here",
@@ -21,6 +22,7 @@
     "ERROR_COMMUNITYACCOUNT_NOTSET": "Discord community account not set yet!",
     "ERROR_COMMUNITYACCOUNT404": "Community account entered in config doesn't exist!",
     "ERROR_NO_PERMISSION": "Sorry, you do not have the required permission to execute this command.",
+    "ERROR_NO_PIN_PERMISSION": "Sorry, you're not in the whitelist, therefore you can't pin 720p, 1080p or source videos!",
     "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
