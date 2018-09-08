@@ -620,7 +620,7 @@ bot.on('message', (message) => {
             embed.addField(Config.commandPrefix + 'ipfs720 <link>', Config.HELP_IPFS720);
             embed.addField(Config.commandPrefix + 'ipfs1080 <link>', Config.HELP_IPFS1080);
             embed.addField(Config.commandPrefix + 'ipfssound <link>', Config.HELP_IPFSSOUND);
-            embed.addField(Config.commandPrefix + 'botintro', Config.BOTINTRO);
+            embed.addField(Config.commandPrefix + 'botintro', Config.HELP_BOTINTRO);
 
             if (Config.donationsAccepted == true) {
                 embed.addField(Config.commandPrefix + 'ipfsdonate <currency> <amount>', Config.HELP_IPFSDONATE);
@@ -638,7 +638,7 @@ bot.on('message', (message) => {
         }
     } else if (message.content == (Config.commandPrefix + 'ipfsadminhelp')) {
         // Bot command list for admins only
-        if (Config.hdwhitelistEnabled == true) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true && Config.hdwhitelistEnabled == true && Config.silentModeEnabled != true) {
             var adminEmbed = new Discord.RichEmbed();
             adminEmbed.setTitle('DTube IPFS Bot Command Cheatsheet for admins');
             adminEmbed.addField(Config.commandPrefix + 'hdwhitelist add <user>', Config.ADMIN_HELP_WHITELIST_ADD);
@@ -650,6 +650,7 @@ bot.on('message', (message) => {
         } else {
             message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
         }
+        
     }
 });
 
