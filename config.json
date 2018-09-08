@@ -20,6 +20,7 @@
     "ERROR_INVALID_AMOUNT": "Invalid amount entered!",
     "ERROR_COMMUNITYACCOUNT_NOTSET": "Discord community account not set yet!",
     "ERROR_COMMUNITYACCOUNT404": "Community account entered in config doesn't exist!",
+    "ERROR_NO_PERMISSION": "Sorry, you do not have the required permission to execute this command.",
     "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
@@ -35,5 +36,7 @@
     "WHITELIST_TRUE": "You're in the whitelist! You may pin your DTube videos at 720p, 1080p and source resolution to our IPFS node :wink:",
     "WHITELIST_FALSE": "Sorry, you're not in the whitelist. Perhaps contact the admins of this server to find out how to get there? :thinking:",
     "WHITELIST_ADD_SUCCESS": "has been added to the IPFS whitelist successfully!",
+    "WHITELIST_RM_SUCCESS": "has been removed from the whitelist successfully!",
+    "WHITELIST_RM_UID404": "User that you're trying to remove is already not in the whitelist. What are you trying to do:question:",
     "WHITELIST_ALREADY_IN": "User is already in the whitelist! What are you trying to do:question:"
 }

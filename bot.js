@@ -495,6 +495,7 @@ bot.on('message', (message) => {
             }
         }
     } else if (message.content == (Config.commandPrefix + 'hdwhitelist check')) {
+        // Check if user is in whitelist
         if (fs.existsSync('HDWhitelist.txt')) {
             var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
             if (readList.includes(message.author.id) == true) {
@@ -506,6 +507,7 @@ bot.on('message', (message) => {
             message.channel.send(Config.WHITELIST_FILE404);
         }
     } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist add ')) {
+        // Add user to whitelist
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
             let uidToWhitelist = message.mentions.members.first().user.id;
 
@@ -521,6 +523,28 @@ bot.on('message', (message) => {
             }
 
             message.channel.send('<@' + uidToWhitelist + '> ' + Config.WHITELIST_ADD_SUCCESS);
+        } else {
+            message.channel.send(Config.ERROR_NO_PERMISSION);
+        }
+    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist rm ')) {
+        // Remove user from whitelist
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            let uidToRemove = message.mentions.members.first().user.id;
+
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(uidToRemove) == true) {
+                    var newList = readList.replace(uidToRemove + '\n', '');
+                    fs.writeFileSync('HDWhitelist.txt', newList);
+                    message.channel.send('<@' + uidToRemove + '> ' + Config.WHITELIST_RM_SUCCESS);
+                } else {
+                    message.channel.send(Config.WHITELIST_RM_UID404);
+                }
+            } else {
+                message.channel.send(Config.WHITELIST_FILE404);
+            }
+        } else {
+            message.channel.send(Config.ERROR_NO_PERMISSION);
         }
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
