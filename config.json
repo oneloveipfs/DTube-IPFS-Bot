@@ -1,6 +1,30 @@
 {
-    "____communityAccount____": "Enter Steem account username of Discord community account here",
+    "____BotSettings____": "Insert bot config info here",
     "communityAccount": "",
+    "silentModeEnabled": false,
+    "commandPrefix": "!",
 
-    "silentModeEnabled": false
+    "___BotOutputMessage___": "Insert bot message output here",
+    "PING_REPLY": "Pong!",
+    "VIDEO_DOWNLOAD_MESSAGE_240P": "240p IPFS hash obtained. Fetching video...",
+    "VIDEO_DOWNLOAD_MESSAGE_480P": "480p IPFS hash obtained. Fetching video...",
+    "VIDEO_DOWNLOAD_MESSAGE_720P": "720p IPFS hash obtained. Fetching video...",
+    "VIDEO_DOWNLOAD_MESSAGE_1080P": "1080p IPFS hash obtained. Fetching video...",
+    "VIDEO_DOWNLOAD_MESSAGE_SOURCE": "IPFS hash obtained. Fetching video...",
+    "VIDEO_DOWNLOAD_COMPLETE": "Video downloaded successfully, and added to IPFS manual pinning queue.",
+    "AUDIO_DOWNLOAD_MESSAGE": "DSound audio IPFS hash obtained. Fetching audio...",
+    "AUDIO_DOWNLOAD_COMPLETE": "Audio downloaded successfully, and added to IPFS manual pinning queue.",
+    "ERROR_STEEM_GETCONTENT": "Error: ",
+    "ERROR_DOWNLOAD": "Error downloading file: ",
+    "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
+    "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
+    "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
+    "HELP_IPFS720": "Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
+    "HELP_IPFS1080": "Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
+    "HELP_IPFSSOUND": "Fetches DSound audio file from ipfs.io and adds to IPFS file pinning queue. This command only supports DSound audio!",
+    "HELP_BOTINTRO": "Posts a link to the introtroduceyourself Steemit post about the bot.",
+    "HELP_IPFSDONATE": "Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!",
+    "HELP_IPFSDEVDONATE": "Support the development of the bot by donating STEEM/SBD to developer!",
+    "HELP_IPFSHELP": "Shows this cheatsheet with all available commands for this bot.",
+    "HELP_PING": "Use this to check if bots are online!"
 }

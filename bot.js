@@ -9,14 +9,21 @@ const bot = new Discord.Client();
 
 Steem.api.setOptions({url: 'https://api.steemit.com'});
 
+if (Config.commandPrefix == "") {
+    // Terminate bot if no command prefix provided
+    console.log('No command prefix provided. Terminating bot...')
+    process.exit(1);
+}
+
 bot.login(Auth.token);
 
 console.log('IPFS Bot started!\n');
 
 bot.on('message', (message) => {
-    if (message.content.startsWith('!ping')) {
-        message.channel.send('Pong!');
-    } else if (message.content.startsWith('!ipfs ')) {
+    if (message.content.startsWith(Config.commandPrefix + 'ping')) {
+        // Pong!
+        message.channel.send(Config.PING_REPLY);
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfs ')) {
         // Source video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -31,9 +38,9 @@ bot.on('message', (message) => {
             
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -51,9 +58,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -61,9 +68,9 @@ bot.on('message', (message) => {
                 // Get file size in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('IPFS hash obtained. Fetching video...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('IPFS hash obtained. Fetching video...\nVideo file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nVideo file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -77,13 +84,13 @@ bot.on('message', (message) => {
                 }
                 
                 if (Config.silentModeEnabled == true) {
-                    console.log('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 }
             });
         });
-    } else if (message.content.startsWith('!ipfs240 ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
         // 240p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -98,9 +105,9 @@ bot.on('message', (message) => {
             
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -117,9 +124,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -127,9 +134,9 @@ bot.on('message', (message) => {
                 // Get file size in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('240p IPFS hash obtained. Fetching video...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('240p IPFS hash obtained. Fetching video...\nVideo file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nVideo file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -143,14 +150,14 @@ bot.on('message', (message) => {
                 }
                   
                 if (Config.silentModeEnabled == true) {
-                    console.log('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 }
             });
             
         });
-    } else if (message.content.startsWith('!ipfs480 ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfs480 ')) {
         // 480p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -165,9 +172,9 @@ bot.on('message', (message) => {
             
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -184,9 +191,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -194,9 +201,9 @@ bot.on('message', (message) => {
                 // Get file size in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('480p IPFS hash obtained. Fetching video...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('480p IPFS hash obtained. Fetching video...\nVideo file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nVideo file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -210,13 +217,13 @@ bot.on('message', (message) => {
                 }
                 
                 if (Config.silentModeEnabled == true) {
-                    console.log('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 }
             });
         });
-    } else if (message.content.startsWith('!ipfs720 ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -231,9 +238,9 @@ bot.on('message', (message) => {
             
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -250,9 +257,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -260,9 +267,9 @@ bot.on('message', (message) => {
                 // Get file size in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('720p IPFS hash obtained. Fetching video...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('720p IPFS hash obtained. Fetching video...\nVideo file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nVideo file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -276,13 +283,13 @@ bot.on('message', (message) => {
                 }
                 
                 if (Config.silentModeEnabled == true) {
-                    console.log('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 }
             });
         });
-    } else if (message.content.startsWith('!ipfs1080 ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -297,9 +304,9 @@ bot.on('message', (message) => {
             
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -316,9 +323,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -326,9 +333,9 @@ bot.on('message', (message) => {
                 // Get file size in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('1080p IPFS hash obtained. Fetching video...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('1080p IPFS hash obtained. Fetching video...\nVideo file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nVideo file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -342,13 +349,13 @@ bot.on('message', (message) => {
                 }
                 
                 if (Config.silentModeEnabled == true) {
-                    console.log('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Video downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 }
             });
         });
-    } else if (message.content.startsWith('!ipfssound ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
         // DSound audio
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -362,9 +369,9 @@ bot.on('message', (message) => {
         Steem.api.getContent(author,steemitAuthorPermlink[1],function(err,result) {
             if (err != null) {
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error: ' + err);
+                    console.log(Config.ERROR_STEEM_GETCONTENT + err);
                 } else {
-                    message.reply('Error: ' + err);
+                    message.reply(Config.ERROR_STEEM_GETCONTENT + err);
                 }
                 return;
             }
@@ -381,9 +388,9 @@ bot.on('message', (message) => {
             download.on('error',function(err) {
                 // Download error
                 if (Config.silentModeEnabled == true) {
-                    console.log('Error downloading file: ' + err);
+                    console.log(Config.ERROR_DOWNLOAD + err);
                 } else {
-                    message.channel.send('Error downloading file: ' + err);
+                    message.channel.send(Config.ERROR_DOWNLOAD + err);
                 }
             });
 
@@ -391,9 +398,9 @@ bot.on('message', (message) => {
                 // Get filesize in MB
                 var humanreadableFS = (filesize / 1048576).toFixed(2);
                 if (Config.silentModeEnabled == true) {
-                    console.log('DSound audio IPFS hash obtained. Fetching audio...\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
+                    console.log(Config.AUDIO_DOWNLOAD_MESSAGE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
                 } else {
-                    message.channel.send('DSound audio IPFS hash obtained. Fetching audio...\nAudio file size: ' + humanreadableFS + 'MB');
+                    message.channel.send(Config.AUDIO_DOWNLOAD_MESSAGE + '\nAudio file size: ' + humanreadableFS + 'MB');
                 }
             });
 
@@ -407,17 +414,17 @@ bot.on('message', (message) => {
                 }
                 
                 if (Config.silentModeEnabled == true) {
-                    console.log('Audio downloaded successfully, and added to IPFS manual pinning queue.');
+                    console.log(Config.AUDIO_DOWNLOAD_COMPLETE);
                 } else {
-                    message.reply('Audio downloaded successfully, and added to IPFS manual pinning queue.');
+                    message.reply(Config.AUDIO_DOWNLOAD_COMPLETE);
                 }
             });
         });
-    } else if (message.content == '!botintro') {
+    } else if (message.content == (Config.commandPrefix + 'botintro')) {
         if (Config.silentModeEnabled != true) {
             message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
         }
-    } else if (message.content.startsWith('!ipfsdonate ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfsdonate ')) {
         if (Config.silentModeEnabled != true) {
             // Generates SteemConnect donate link to community account (e.g. to cover server costs etc)
             var account = Config.communityAccount;
@@ -462,7 +469,7 @@ bot.on('message', (message) => {
                 }
             });
         }
-    } else if (message.content.startsWith('!ipfsdevdonate ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'ipfsdevdonate ')) {
         if (Config.silentModeEnabled != true) {
             // Generates SteemConnect donate link to developer
             var crypto = message.content.split(' ').slice(-2);
@@ -487,22 +494,22 @@ bot.on('message', (message) => {
                 message.channel.send('Invalid amount entered!');
             }
         }
-    } else if (message.content == '!ipfshelp') {
+    } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list
             var embed = new Discord.RichEmbed();
             embed.setTitle('DTube IPFS Bot Command Cheatsheet');
-            embed.addField('!ipfs <link>', 'Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
-            embed.addField('!ipfs240 <link>', 'Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
-            embed.addField('!ipfs480 <link>', 'Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
-            embed.addField('!ipfs720 <link>', 'Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
-            embed.addField('!ipfs1080 <link>', 'Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!');
-            embed.addField('!ipfssound <link>', 'Fetches DSound audio file from ipfs.io and adds to IPFS file pinning queue. This command only supports DSound audio!');
-            embed.addField('!botintro','Posts a link to the introtroduceyourself Steemit post about the bot.');
-            embed.addField('!ipfsdonate <currency> <amount>','Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!');
-            embed.addField('!ipfsdevdonate <currency> <amount>','Support the development of the bot by donating STEEM/SBD to developer!');
-            embed.addField('!ipfshelp', 'Shows this cheatsheet with all available commands for this bot');
-            embed.addField('!ping', 'Gets the bot to reply with "Pong!"');
+            embed.addField(Config.commandPrefix + 'ipfs <link>', Config.HELP_IPFS);
+            embed.addField(Config.commandPrefix + 'ipfs240 <link>', Config.HELP_IPFS240);
+            embed.addField(Config.commandPrefix + 'ipfs480 <link>', Config.HELP_IPFS480);
+            embed.addField(Config.commandPrefix + 'ipfs720 <link>', Config.HELP_IPFS720);
+            embed.addField(Config.commandPrefix + 'ipfs1080 <link>', Config.HELP_IPFS1080);
+            embed.addField(Config.commandPrefix + 'ipfssound <link>', Config.HELP_IPFSSOUND);
+            embed.addField(Config.commandPrefix + 'botintro', Config.BOTINTRO);
+            embed.addField(Config.commandPrefix + 'ipfsdonate <currency> <amount>', Config.HELP_IPFSDONATE);
+            embed.addField(Config.commandPrefix + 'ipfsdevdonate <currency> <amount>', Config.HELP_IPFSDEVDONATE);
+            embed.addField(Config.commandPrefix + 'ipfshelp', Config.HELP_IPFSHELP);
+            embed.addField(Config.commandPrefix + 'ping', Config.HELP_PING);
             embed.setColor(0x499293);
             message.channel.send(embed);
         }
