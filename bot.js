@@ -96,6 +96,14 @@ bot.on('message', (message) => {
                 } else {
                     fs.writeFileSync('dtubehashvalues.txt', ipfshash + '\n');
                 }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
+                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfshash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid+ '.txt', ipfshash + '\n')
+                }
                 
                 if (Config.silentModeEnabled == true) {
                     console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
@@ -161,6 +169,14 @@ bot.on('message', (message) => {
                     fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs240hash + '\n');  
                 } else {
                     fs.writeFileSync('dtubehashvalues.txt', ipfs240hash + '\n');
+                }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
+                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfs240hash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid + '.txt', ipfs240hash + '\n')
                 }
                   
                 if (Config.silentModeEnabled == true) {
@@ -228,6 +244,14 @@ bot.on('message', (message) => {
                     fs.writeFileSync('dtubehashvalues.txt', readQueue + ipfs480hash + '\n');  
                 } else {
                     fs.writeFileSync('dtubehashvalues.txt', ipfs480hash + '\n');
+                }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
+                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfs480hash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid + '.txt', ipfs480hash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -309,6 +333,14 @@ bot.on('message', (message) => {
                 } else {
                     fs.writeFileSync('dtubehashvalues.txt', ipfs720hash + '\n');
                 }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid)) {
+                    var readData = fs.readFileSync('./Creators/' + uid);
+                    fs.writeFileSync('./Creators/' + uid, readData + ipfs720hash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid, ipfs720hash + '\n')
+                }
                 
                 if (Config.silentModeEnabled == true) {
                     console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
@@ -389,6 +421,14 @@ bot.on('message', (message) => {
                 } else {
                     fs.writeFileSync('dtubehashvalues.txt', ipfs1080hash + '\n');
                 }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid)) {
+                    var readData = fs.readFileSync('./Creators/' + uid);
+                    fs.writeFileSync('./Creators/' + uid, readData + ipfs1080hash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid, ipfs1080hash + '\n')
+                }
                 
                 if (Config.silentModeEnabled == true) {
                     console.log(Config.VIDEO_DOWNLOAD_COMPLETE);
@@ -453,6 +493,14 @@ bot.on('message', (message) => {
                     fs.writeFileSync('dsoundhashvalues.txt', readQueue + dsoundhash + '\n');
                 } else {
                     fs.writeFileSync('dsoundhashvalues.txt', dsoundhash + '\n');
+                }
+
+                let uid = message.member.id;
+                if (fs.existsSync('./Creators/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
+                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + dsoundhash + '\n');
+                } else {
+                    fs.writeFileSync('./Creators/' + uid + '.txt', dsoundhash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -651,6 +699,15 @@ bot.on('message', (message) => {
             message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
         }
         
+    } else if (message.content == Config.commandPrefix + 'readMyHashes') {
+        let uid = message.member.id;
+                if (fs.existsSync('Creators/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('Creators/' + uid + '.txt');
+                    console.log(readData);
+                } else {
+                    fs.writeFileSync('Creators/' + uid + '.txt', ' ');
+                    console.log('file written to disk');
+                }
     }
 });
 
