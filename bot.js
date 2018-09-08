@@ -546,6 +546,26 @@ bot.on('message', (message) => {
         } else {
             message.channel.send(Config.ERROR_NO_PERMISSION);
         }
+    } else if (message.content == (Config.commandPrefix + 'hdwhitelist ls')) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhiteList.txt', 'utf8');
+                var uidListArray = readList.split('\n');
+    
+                for (var i = 0; i < uidListArray.length; i++) {
+                    uidListArray[i] = '<@' + uidListArray[i] + '>';
+                }
+    
+                var uidList = uidListArray.toString();
+                var finalListToDM = uidList.replace(',', '\n');
+                finalListToDM = finalListToDM.slice(0,-4);
+                message.member.send(finalListToDM);
+            } else {
+                message.channel.send(Config.WHITELIST_FILE404);
+            }
+        } else {
+            message.channel.send(Config.ERROR_NO_PERMISSION);
+        }
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list
