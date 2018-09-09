@@ -558,8 +558,9 @@ bot.on('message', (message) => {
                 }
     
                 var uidList = uidListArray.toString();
-                var finalListToDM = uidList.replace(',', '\n');
+                var finalListToDM = uidList.replace(/,/g, '\n');
                 finalListToDM = finalListToDM.slice(0,-4);
+                finalListToDM = 'Whitelisted users: \n' + finalListToDM;
                 if (Config.silentModeEnabled != true) {
                     message.member.send(finalListToDM);
                 }
