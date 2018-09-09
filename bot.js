@@ -613,7 +613,9 @@ bot.on('message', (message) => {
             adminEmbed.setColor(0x499293);
             message.member.send(adminEmbed);
         } else {
-            message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
+            if (Config.silentModeEnabled != true) {
+                message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
+            }
         }
     }
 });
