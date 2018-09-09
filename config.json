@@ -6,7 +6,7 @@
     "sdOnlyMode": false,
     "hdwhitelistEnabled": true,
     "donationsAccepted": true,
-    "commandPrefix": ">",
+    "commandPrefix": "!",
 
     "___BotOutputMessage___": "Insert bot message output here",
     "PING_REPLY": "Pong!",

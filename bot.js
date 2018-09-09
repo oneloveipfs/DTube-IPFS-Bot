@@ -94,7 +94,7 @@ bot.on('message', (message) => {
             download.on('end',function() {
                 // Adds ipfs hash to user database and pinning queue
                 addDTubeHashToDatabase(message,ipfshash);
-                message.channel.send(Config.VIDEO_DOWNLOAD_COMPLETE);
+                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
@@ -148,7 +148,7 @@ bot.on('message', (message) => {
             download.on('end',function() {
                 // Adds ipfs hash to user database and pinning queue
                 addDTubeHashToDatabase(message,ipfs240hash);
-                message.channel.send(Config.VIDEO_DOWNLOAD_COMPLETE);
+                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
             });
             
         });
@@ -203,7 +203,7 @@ bot.on('message', (message) => {
             download.on('end',function() {
                 // Adds ipfs hash to user database and pinning queue
                 addDTubeHashToDatabase(message,ipfs480hash);
-                message.channel.send(Config.VIDEO_DOWNLOAD_COMPLETE);
+                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
@@ -276,7 +276,7 @@ bot.on('message', (message) => {
             download.on('end',function() {
                 // Adds ipfs hash to user database and pinning queue
                 addDTubeHashToDatabase(message,ipfs720hash);
-                message.channel.send(Config.VIDEO_DOWNLOAD_COMPLETE);
+                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
@@ -348,7 +348,7 @@ bot.on('message', (message) => {
 
             download.on('end',function() {
                 addDTubeHashToDatabase(message,ipfs1080hash);
-                message.channel.send(Config.VIDEO_DOWNLOAD_COMPLETE);
+                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
@@ -412,10 +412,10 @@ bot.on('message', (message) => {
                     var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
                     fs.writeFileSync('./Pinned/' + uid + '.txt', readData + dsoundhash + '\n');
                 } else {
-                    fs.writeFileSync('./Pinned/' + uid + '.txt', dsoundhash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', dsoundhash + '\n');
                 }
                 
-                replyMessage(message,Config.AUDIO_DOWNLOAD_COMPLETE);
+                message.channel.send(message,Config.AUDIO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content == (Config.commandPrefix + 'botintro')) {
