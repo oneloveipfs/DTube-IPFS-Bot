@@ -7,7 +7,7 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 * NodeJS with `npm` command line tools
 * `wget`
 * `ipfs` (go-ipfs with a running daemon)
-* `crontab` for autopinning IPFS files in queue
+* `crontab` for autopinning IPFS files in queue and fetching pinned IPFS hashes
 
 #### Additional requirements
 
@@ -19,7 +19,13 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 2. Insert the Discord bot token in `auth.json` file.
 
-3. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
+3. Configure the bot by modifying `config.json` file.
+
+4. Run `bash PinScriptSetup.bash` to make pinning scripts executable.
+
+5. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
+
+Note: you may need increase the value of `--max_old_space_size` if several large files are being downloaded at once.
 
 Use the link below to invite the bot to your Discord server:
 
@@ -27,11 +33,27 @@ Use the link below to invite the bot to your Discord server:
 
 (where `YOURCLIENTID` is the client ID of your Discord application)
 
+#### To fetch all pinned files on IPFS node:
+
+`ipfs pin ls -t recursive > Pinned/AllPins.txt`
+
+It is recommended to set this command to execute regularly using `crontab` so that the list of pinned files is kept up to date as much as possible.
+
 # Pinning IPFS files
 
-While the IPFS daemon is running, you may run `bash PinFiles.bash` to pin all video and audio files in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
+While the IPFS daemon is running, you may run `./PinFiles.sh` to pin all video and audio files in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
 
 For more info about `crontab` which is built into Linux and macOS, visit [here](https://gist.github.com/mkaz/69066bd0c5e45515a264).
+
+# Unpinning IPFS files
+
+You may choose to unpin all IPFS files that were downloaded by a user by doing the following:
+
+1. Navigate to `Pinned` folder
+
+2. Run `./rmPin.sh DiscordUserID` where `DiscordUserID` is the ID of a Discord user.
+
+3. Run `ipfs repo gc` when you're done.
 
 # Links support
 
