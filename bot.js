@@ -103,11 +103,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
-                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfshash + '\n');
+                if (fs.existsSync('./Pinned/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', readData + ipfshash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid+ '.txt', ipfshash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid+ '.txt', ipfshash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -177,11 +177,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
-                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfs240hash + '\n');
+                if (fs.existsSync('./Pinned/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', readData + ipfs240hash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid + '.txt', ipfs240hash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', ipfs240hash + '\n')
                 }
                   
                 if (Config.silentModeEnabled == true) {
@@ -252,11 +252,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
-                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + ipfs480hash + '\n');
+                if (fs.existsSync('./Pinned/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', readData + ipfs480hash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid + '.txt', ipfs480hash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', ipfs480hash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -345,11 +345,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid)) {
-                    var readData = fs.readFileSync('./Creators/' + uid);
-                    fs.writeFileSync('./Creators/' + uid, readData + ipfs720hash + '\n');
+                if (fs.existsSync('./Pinned/' + uid)) {
+                    var readData = fs.readFileSync('./Pinned/' + uid);
+                    fs.writeFileSync('./Pinned/' + uid, readData + ipfs720hash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid, ipfs720hash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid, ipfs720hash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -438,11 +438,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid)) {
-                    var readData = fs.readFileSync('./Creators/' + uid);
-                    fs.writeFileSync('./Creators/' + uid, readData + ipfs1080hash + '\n');
+                if (fs.existsSync('./Pinned/' + uid)) {
+                    var readData = fs.readFileSync('./Pinned/' + uid);
+                    fs.writeFileSync('./Pinned/' + uid, readData + ipfs1080hash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid, ipfs1080hash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid, ipfs1080hash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
@@ -511,11 +511,11 @@ bot.on('message', (message) => {
                 }
 
                 let uid = message.member.id;
-                if (fs.existsSync('./Creators/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('./Creators/' + uid + '.txt');
-                    fs.writeFileSync('./Creators/' + uid + '.txt', readData + dsoundhash + '\n');
+                if (fs.existsSync('./Pinned/' + uid + '.txt')) {
+                    var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', readData + dsoundhash + '\n');
                 } else {
-                    fs.writeFileSync('./Creators/' + uid + '.txt', dsoundhash + '\n')
+                    fs.writeFileSync('./Pinned/' + uid + '.txt', dsoundhash + '\n')
                 }
                 
                 if (Config.silentModeEnabled == true) {
