@@ -19,7 +19,7 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 2. Insert the Discord bot token in `auth.json` file.
 
-3. Configure the bot by modifying `config.json` file.
+3. Configure the bot by modifying `config.json` file. If you need help configuring the bot, view the documentation [here](https://github.com/techcoderx/DTube-IPFS-Bot/blob/master/ConfigDocs.md).
 
 4. Run `bash PinScriptSetup.bash` to make pinning scripts executable.
 
