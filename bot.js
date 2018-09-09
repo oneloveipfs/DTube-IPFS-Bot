@@ -11,7 +11,7 @@ Steem.api.setOptions({url: 'https://api.steemit.com'});
 
 if (Config.commandPrefix == "") {
     // Terminate bot if no command prefix provided
-    console.log('No command prefix provided. Terminating bot...')
+    console.log(Config.ERROR_PREFIX404)
     process.exit(1);
 }
 
@@ -26,7 +26,11 @@ bot.on('message', (message) => {
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs ')) {
         // Source video
         if (Config.sdOnlyMode == true) {
-            message.channel.send(Config.ERROR_SD_ONLY_MODE);
+            if (Config.silentModeEnabled == true) {
+                console.log(Config.ERROR_SD_ONLY_MODE);
+            } else {
+                message.channel.send(Config.ERROR_SD_ONLY_MODE);
+            }
             return;
         }
 
@@ -69,6 +73,20 @@ bot.on('message', (message) => {
 
             // Get IPFS hash of source video file
             var ipfshash = jsonmeta.video.content.videohash;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(ipfshash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
 
             // Download file to server!
@@ -143,6 +161,20 @@ bot.on('message', (message) => {
             var jsonmeta = JSON.parse(result.json_metadata);
 
             var ipfs240hash = jsonmeta.video.content.video240hash;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(ipfs240hash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
 
             // Download file to server!
@@ -218,6 +250,20 @@ bot.on('message', (message) => {
             var jsonmeta = JSON.parse(result.json_metadata);
 
             var ipfs480hash = jsonmeta.video.content.video480hash;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(ipfs480hash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
 
             // Download file to server!
@@ -269,8 +315,12 @@ bot.on('message', (message) => {
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
         if (Config.sdOnlyMode == true) {
-            message.channel.send(Config.ERROR_SD_ONLY_MODE);
-            return;
+            if (Config.silentModeEnabled == true) {
+                return;
+            } else {
+                message.channel.send(Config.ERROR_SD_ONLY_MODE);
+                return;
+            }
         }
 
         if (Config.hdwhitelistEnabled == true) {
@@ -311,6 +361,20 @@ bot.on('message', (message) => {
             var jsonmeta = JSON.parse(result.json_metadata);
 
             var ipfs720hash = jsonmeta.video.content.video720hash;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(ipfs720hash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
 
             // Download file to server!
@@ -362,8 +426,12 @@ bot.on('message', (message) => {
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
         if (Config.sdOnlyMode == true) {
-            message.channel.send(Config.ERROR_SD_ONLY_MODE);
-            return;
+            if (Config.silentModeEnabled == true) {
+                return;
+            } else {
+                message.channel.send(Config.ERROR_SD_ONLY_MODE);
+                return;
+            }
         }
         
         if (Config.hdwhitelistEnabled == true) {
@@ -404,6 +472,20 @@ bot.on('message', (message) => {
             var jsonmeta = JSON.parse(result.json_metadata);
 
             var ipfs1080hash = jsonmeta.video.content.video1080hash;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(ipfs1080hash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
 
             // Download file to server!
@@ -477,6 +559,20 @@ bot.on('message', (message) => {
             var jsonmeta = JSON.parse(result.json_metadata);
 
             var dsoundhash = jsonmeta.audio.files.sound;
+
+            if (fs.existsSync('./Pinned/AllPinned.txt')) {
+                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
+                if (readPinnedList.includes(dsoundhash)) {
+                    // File already pinned
+                    if (Config.silentModeEnabled == true) {
+                        console.log(Config.ERROR_FILE_ALREADY_PINNED);
+                    } else {
+                        message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
+                    }
+                    return;
+                }
+            }
+
             var dsoundipfslink = 'https://ipfs.io/ipfs/' + dsoundhash;
 
             // Download video to server!
