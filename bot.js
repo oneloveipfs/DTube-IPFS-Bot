@@ -422,6 +422,8 @@ bot.on('message', (message) => {
         if (Config.silentModeEnabled != true) {
             message.channel.send('__***Find out more about DTube IPFS Bot:***__ \nhttps://steemit.com/utopian-io/@techcoderx/new-discord-bot-to-pin-dtube-videos-to-ipfs-node');
         }
+    } else if (message.content == (Config.commandPrefix + 'botsource')) {
+        sendMessage(message,Config.BOT_SOURCE);
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfsdonate ')) {
         if (Config.silentModeEnabled != true && Config.donationsAccepted == true) {
             // Generates SteemConnect donate link to community account (e.g. to cover server costs etc)
