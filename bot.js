@@ -550,7 +550,7 @@ bot.on('message', (message) => {
         // List all users in whitelist in DM
         if (message.member.hasPermission('ADMINISTRATOR') == true && Config.silentModeEnabled != true) {
             if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhiteList.txt', 'utf8');
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 var uidListArray = readList.split('\n');
     
                 for (var i = 0; i < uidListArray.length; i++) {
