@@ -25,6 +25,11 @@ bot.on('message', (message) => {
         message.channel.send(Config.PING_REPLY);
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs ')) {
         // Source video
+        if (Config.sdOnlyMode == true) {
+            message.channel.send(Config.ERROR_SD_ONLY_MODE);
+            return;
+        }
+
         if (Config.hdwhitelistEnabled == true) {
             if (fs.existsSync('HDWhitelist.txt')) {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
@@ -263,6 +268,11 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
+        if (Config.sdOnlyMode == true) {
+            message.channel.send(Config.ERROR_SD_ONLY_MODE);
+            return;
+        }
+
         if (Config.hdwhitelistEnabled == true) {
             if (fs.existsSync('HDWhitelist.txt')) {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
@@ -351,6 +361,11 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
+        if (Config.sdOnlyMode == true) {
+            message.channel.send(Config.ERROR_SD_ONLY_MODE);
+            return;
+        }
+        
         if (Config.hdwhitelistEnabled == true) {
             if (fs.existsSync('HDWhitelist.txt')) {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
@@ -665,8 +680,12 @@ bot.on('message', (message) => {
             embed.addField(Config.commandPrefix + 'ipfs <link>', Config.HELP_IPFS);
             embed.addField(Config.commandPrefix + 'ipfs240 <link>', Config.HELP_IPFS240);
             embed.addField(Config.commandPrefix + 'ipfs480 <link>', Config.HELP_IPFS480);
-            embed.addField(Config.commandPrefix + 'ipfs720 <link>', Config.HELP_IPFS720);
-            embed.addField(Config.commandPrefix + 'ipfs1080 <link>', Config.HELP_IPFS1080);
+
+            if (Config.sdOnlyMode != true) {
+                embed.addField(Config.commandPrefix + 'ipfs720 <link>', Config.HELP_IPFS720);
+                embed.addField(Config.commandPrefix + 'ipfs1080 <link>', Config.HELP_IPFS1080);
+            }
+            
             embed.addField(Config.commandPrefix + 'ipfssound <link>', Config.HELP_IPFSSOUND);
             embed.addField(Config.commandPrefix + 'botintro', Config.HELP_BOTINTRO);
 
