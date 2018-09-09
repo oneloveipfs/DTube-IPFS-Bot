@@ -1,5 +1,6 @@
 {
     "____BotSettings____": "Insert bot config info here",
+    "steemAPIURL": "https://api.steemit.com",
     "communityAccount": "",
     "silentModeEnabled": false,
     "sdOnlyMode": false,
@@ -18,7 +19,7 @@
     "AUDIO_DOWNLOAD_MESSAGE": "DSound audio IPFS hash obtained. Fetching audio...",
     "AUDIO_DOWNLOAD_COMPLETE": "Audio downloaded successfully, and added to IPFS manual pinning queue.",
     "ERROR_PREFIX404": "No command prefix provided. Terminating bot...",
-    "ERROR_STEEM_GETCONTENT": "Error: ",
+    "ERROR_STEEM_GETCONTENT": "Steem Error: ",
     "ERROR_DOWNLOAD": "Error downloading file: ",
     "ERROR_INVALID_CURRENCY": "Invalid currency entered!",
     "ERROR_INVALID_AMOUNT": "Invalid amount entered!",
