@@ -6,3 +6,4 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     fi
 done < $1.txt
 rm $1.txt
+ipfs pin ls -t recursive > AllPinned.txt
