@@ -415,7 +415,7 @@ bot.on('message', (message) => {
                     fs.writeFileSync('./Pinned/' + uid + '.txt', dsoundhash + '\n');
                 }
                 
-                message.channel.send(message,Config.AUDIO_DOWNLOAD_COMPLETE);
+                message.reply(Config.AUDIO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content == (Config.commandPrefix + 'botintro')) {
