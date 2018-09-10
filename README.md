@@ -7,7 +7,6 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 * NodeJS with `npm` command line tools
 * `wget`
 * `ipfs` (go-ipfs with a running daemon)
-* `crontab` for autopinning IPFS files in queue and fetching pinned IPFS hashes
 
 #### Additional requirements
 
@@ -21,7 +20,7 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 3. Configure the bot by modifying `config.json` file. If you need help configuring the bot, view the documentation [here](https://github.com/techcoderx/DTube-IPFS-Bot/blob/master/ConfigDocs.md).
 
-4. Run `bash PinScriptSetup.bash` to make pinning scripts executable.
+4. Run `chmod a+rx Pinned/rmPins.sh` to make unpinning script located at [Pinned](https://github.com/techcoderx/DTube-IPFS-Bot/tree/master/Pinned) folder executable.
 
 5. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
 
@@ -35,15 +34,9 @@ Use the link below to invite the bot to your Discord server:
 
 #### To fetch all pinned files on IPFS node:
 
+The text file is set to be updated whenever each file is pinned, or an unpin script is run. However, you may run the command below if you need to update it manually:
+
 `ipfs pin ls -t recursive > Pinned/AllPins.txt`
-
-It is recommended to set this command to execute regularly using `crontab` so that the list of pinned files is kept up to date as much as possible.
-
-# Pinning IPFS files
-
-While the IPFS daemon is running, you may run `./PinFiles.sh` to pin all video and audio files in queue to the local IPFS node. Alternatively, you may use `crontab` to schedule the bash script to run at regular intervals.
-
-For more info about `crontab` which is built into Linux and macOS, visit [here](https://gist.github.com/mkaz/69066bd0c5e45515a264).
 
 # Unpinning IPFS files
 

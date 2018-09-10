@@ -1,6 +1,6 @@
 {
     "name": "dtube-ipfs-bot",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Pins DTube videos to an IPFS node recursively.",
     "main": "bot.js",
     "author": "techcoderx",
