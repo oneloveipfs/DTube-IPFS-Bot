@@ -7,6 +7,8 @@
     "dependencies": {
         "discord.js": "^11.3.2",
         "fs": "0.0.1-security",
+        "process-exists": "^3.1.0",
+        "shelljs": "^0.8.2",
         "steem": "^0.7.1",
         "wget-improved": "^3.0.1"
     }

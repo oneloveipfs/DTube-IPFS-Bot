@@ -4,6 +4,8 @@ const Steem = require('steem');
 const Auth = require('./auth.json');
 const Config = require('./config.json');
 const fs = require('fs');
+const shell = require('shelljs');
+const processExists = require('process-exists');
 
 const bot = new Discord.Client();
 
@@ -92,9 +94,9 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                // Adds ipfs hash to user database and pinning queue
-                addDTubeHashToDatabase(message,ipfshash);
-                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,ipfshash);
+                addDTubeVideoToIPFS(message,ipfshash);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
@@ -146,9 +148,9 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                // Adds ipfs hash to user database and pinning queue
-                addDTubeHashToDatabase(message,ipfs240hash);
-                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,ipfs240hash);
+                addDTubeVideoToIPFS(message,ipfs240hash);
             });
             
         });
@@ -201,9 +203,9 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                // Adds ipfs hash to user database and pinning queue
-                addDTubeHashToDatabase(message,ipfs480hash);
-                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,ipfs480hash);
+                addDTubeVideoToIPFS(message,ipfs480hash);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
@@ -274,9 +276,9 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                // Adds ipfs hash to user database and pinning queue
-                addDTubeHashToDatabase(message,ipfs720hash);
-                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,ipfs720hash);
+                addDTubeVideoToIPFS(message,ipfs720hash);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
@@ -347,8 +349,9 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                addDTubeHashToDatabase(message,ipfs1080hash);
-                message.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,ipfs1080hash);
+                addDTubeVideoToIPFS(message,ipfs1080hash);
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
@@ -399,23 +402,18 @@ bot.on('message', (message) => {
             });
 
             download.on('end',function() {
-                // Adds ipfs hash to user database and pinning queue
-                if (fs.existsSync('dsoundhashvalues.txt')) {
-                    var readQueue = fs.readFileSync('dsoundhashvalues.txt', 'utf8');
-                    fs.writeFileSync('dsoundhashvalues.txt', readQueue + dsoundhash + '\n');
-                } else {
-                    fs.writeFileSync('dsoundhashvalues.txt', dsoundhash + '\n');
+                // Adds ipfs hash to user database and pins file to IPFS node
+                addHashToDatabase(message,dsoundhash)
+                if (processExists('ipfs daemon')) {
+                    // Pin files only if daemon is running
+                    shell.exec('ipfs add ' + dsoundhash, function() {
+                        shell.exec('ipfs pin add ' + dsoundhash, function() {
+                            message.reply(Config.AUDIO_DOWNLOAD_COMPLETE);
+                            shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                            shell.rm('Qm*');
+                        });
+                    });
                 }
-
-                let uid = message.member.id;
-                if (fs.existsSync('./Pinned/' + uid + '.txt')) {
-                    var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
-                    fs.writeFileSync('./Pinned/' + uid + '.txt', readData + dsoundhash + '\n');
-                } else {
-                    fs.writeFileSync('./Pinned/' + uid + '.txt', dsoundhash + '\n');
-                }
-                
-                message.reply(Config.AUDIO_DOWNLOAD_COMPLETE);
             });
         });
     } else if (message.content == (Config.commandPrefix + 'botintro')) {
@@ -636,20 +634,26 @@ function replyMessage(msg,content) {
     }
 }
 
-function addDTubeHashToDatabase(msg,hash) {
-    if (fs.existsSync('dtubehashvalues.txt')) {
-        var readQueue = fs.readFileSync('dtubehashvalues.txt', 'utf8');
-        fs.writeFileSync('dtubehashvalues.txt', readQueue + hash + '\n');  
-    } else {
-        fs.writeFileSync('dtubehashvalues.txt', hash + '\n');
-    }
-
+function addHashToDatabase(msg,hash) {
     let uid = msg.member.id;
     if (fs.existsSync('./Pinned/' + uid + '.txt')) {
         var readData = fs.readFileSync('./Pinned/' + uid + '.txt');
         fs.writeFileSync('./Pinned/' + uid + '.txt', readData + hash + '\n');
     } else {
         fs.writeFileSync('./Pinned/' + uid+ '.txt', hash + '\n')
+    }
+}
+
+function addDTubeVideoToIPFS(msg,hash) {
+    if (processExists('ipfs daemon')) {
+        // Pin files only if daemon is running
+        shell.exec('ipfs add ' + hash + ' -t', function() {
+            shell.exec('ipfs pin add ' + hash, function() {
+                msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                shell.rm('Qm*');
+            });
+        });
     }
 }
 
