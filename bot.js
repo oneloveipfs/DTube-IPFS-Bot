@@ -651,7 +651,7 @@ function addDTubeVideoToIPFS(msg,hash) {
             shell.exec('ipfs pin add ' + hash, function() {
                 msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                 shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                shell.rm('Qm*');
+                shell.rm(hash);
             });
         });
     }
