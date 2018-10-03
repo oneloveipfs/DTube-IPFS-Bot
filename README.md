@@ -36,7 +36,7 @@ Use the link below to invite the bot to your Discord server:
 
 The text file is set to be updated whenever each file is pinned, or an unpin script is run. However, you may run the command below if you need to update it manually:
 
-`ipfs pin ls -t recursive > Pinned/AllPins.txt`
+`ipfs pin ls -t recursive > Pinned/AllPinned.txt`
 
 # Unpinning IPFS files
 

@@ -664,7 +664,6 @@ function addDTubeVideoToIPFS(msg,hash) {
                 });
             });
         }
-        
     }
 }
 
