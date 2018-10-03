@@ -5,6 +5,7 @@ All settings regarding how the bot will work can be configured here.
 
 * `"steemAPIURL"` (String): Sets Steem API server
 * `"communityAccount"` (String): Sets community Steem account for collectiong donations (e.g. to pay for IPFS servers)
+* `"trickledag"` (Bool): Enable trickledag pinning by setting it to true. You may have to try setting this to `false` if same IPFS hash (as downloaded file name) is obtained without trickledag option.
 * `"silentModeEnabled"` (Boolean): If set to true, bot messages will be logged to the console instead of sending them to the chat. Excludes `Pong!` replies and download complete messages. Useful if running multiple instances of bot on different servers (and preferbly different geographical location)
 * `"sdOnlyMode"` (Boolean): If set to true, 720p, 1080p and source pinning commands will be disabled regardless of whitelists.
 * `"hdWhitelistEnabled"` (Boolean): If set to true, whitelisting system is enabled, therefore admins may whitelist certain users to that they can execute 720p, 1080p and source pinning commands.

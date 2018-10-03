@@ -2,6 +2,7 @@
     "____BotSettings____": "Insert bot config info here",
     "steemAPIURL": "https://api.steemit.com",
     "communityAccount": "",
+    "trickledag": false,
     "silentModeEnabled": false,
     "sdOnlyMode": false,
     "hdwhitelistEnabled": true,

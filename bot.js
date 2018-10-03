@@ -647,13 +647,24 @@ function addHashToDatabase(msg,hash) {
 function addDTubeVideoToIPFS(msg,hash) {
     if (processExists('ipfs daemon')) {
         // Pin files only if daemon is running
-        shell.exec('ipfs add ' + hash + ' -t', function() {
-            shell.exec('ipfs pin add ' + hash, function() {
-                msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
-                shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                shell.rm(hash);
+        if (Config.trickledag == true) {
+            shell.exec('ipfs add ' + hash + ' -t', function() {
+                shell.exec('ipfs pin add ' + hash, function() {
+                    msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                    shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                    shell.rm(hash);
+                });
             });
-        });
+        } else {
+            shell.exec('ipfs add ' + hash, function() {
+                shell.exec('ipfs pin add ' + hash, function() {
+                    msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                    shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                    shell.rm(hash);
+                });
+            });
+        }
+        
     }
 }
 
