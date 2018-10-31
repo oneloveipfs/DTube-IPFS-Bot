@@ -8,6 +8,7 @@
     "hdwhitelistEnabled": true,
     "restrictedMode": true,
     "donationsAccepted": true,
+    "rmOriginal": true,
     "commandPrefix": "!",
 
     "___BotOutputMessage___": "Insert bot message output here",

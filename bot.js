@@ -186,7 +186,7 @@ bot.on('message', (message) => {
                 return;
             }
         }
-        
+
         // 480p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -700,7 +700,9 @@ function addDTubeVideoToIPFS(msg,hash) {
                 shell.exec('ipfs pin add ' + hash, function() {
                     msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
                     shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                    shell.rm(hash);
+                    if (Config.rmOriginal == true) {
+                        shell.rm(hash);
+                    }
                 });
             });
         }
