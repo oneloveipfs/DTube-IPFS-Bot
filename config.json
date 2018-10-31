@@ -6,6 +6,7 @@
     "silentModeEnabled": false,
     "sdOnlyMode": false,
     "hdwhitelistEnabled": true,
+    "restrictedMode": true,
     "donationsAccepted": true,
     "commandPrefix": "!",
 
@@ -30,6 +31,7 @@
     "ERROR_SD_ONLY_MODE": "720p, 1080p and source IPFS pinning commands have been disabled.",
     "ERROR_NO_PERMISSION": "Sorry, you do not have the required permission to execute this command.",
     "ERROR_NO_PIN_PERMISSION": "Sorry, you're not in the whitelist, therefore you can't pin 720p, 1080p or source videos!",
+    "ERROR_NO_PIN_PERMISSION_RESTRICTED": "Sorry, you're not in the whitelist, therefore you can't run any pinning commands!",
     "BOT_SOURCE": "__***View the source code of the bot on GitHub:***__\nhttps://github.com/techcoderx/DTube-IPFS-Bot",
     "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
     "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",

@@ -37,7 +37,11 @@ bot.on('message', (message) => {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    if (Config.restrictedMode == true) {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
+                    } else {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    }
                     return;
                 }
             } else {
@@ -100,6 +104,20 @@ bot.on('message', (message) => {
             });
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
+        if (Config.restrictedMode == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(message.author.id) != true) {
+                    // Do not proceed if user is not in whitelist
+                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
+                    return;
+                }
+            } else {
+                sendMessage(message,Config.WHITELIST_FILE404);
+                return;
+            }
+        }
+
         // 240p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -155,6 +173,20 @@ bot.on('message', (message) => {
             
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs480 ')) {
+        if (Config.restrictedMode == true) {
+            if (fs.existsSync('HDWhitelist.txt')) {
+                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
+                if (readList.includes(message.author.id) != true) {
+                    // Do not proceed if user is not in whitelist
+                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
+                    return;
+                }
+            } else {
+                sendMessage(message,Config.WHITELIST_FILE404);
+                return;
+            }
+        }
+        
         // 480p video
         var command = message.content;
         var steemitAuthorPermlink = command.split('/').slice(-2);
@@ -220,7 +252,11 @@ bot.on('message', (message) => {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    if (Config.restrictedMode == true) {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
+                    } else {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    }
                     return;
                 }
             } else {
@@ -293,7 +329,11 @@ bot.on('message', (message) => {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    if (Config.restrictedMode == true) {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
+                    } else {
+                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                    }
                     return;
                 }
             } else {
