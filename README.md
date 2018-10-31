@@ -16,13 +16,15 @@ DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of
 
 1. Clone this repository by typing `git clone https://github.com/techcoderx/DTube-IPFS-Bot.git` in a terminal window.
 
-2. Insert the Discord bot token in `auth.json` file.
+2. Install the required node modules. `cd DTube-IPFS-Bot && npm install`
 
-3. Configure the bot by modifying `config.json` file. If you need help configuring the bot, view the documentation [here](https://github.com/techcoderx/DTube-IPFS-Bot/blob/master/ConfigDocs.md).
+3. Insert the Discord bot token in `auth.json` file.
 
-4. Run `chmod a+rx Pinned/rmPins.sh` to make unpinning script located at [Pinned](https://github.com/techcoderx/DTube-IPFS-Bot/tree/master/Pinned) folder executable.
+4. Configure the bot by modifying `config.json` file. If you need help configuring the bot, view the documentation [here](https://github.com/techcoderx/DTube-IPFS-Bot/blob/master/ConfigDocs.md).
 
-5. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
+5. Run `chmod a+rx Pinned/rmPins.sh` to make unpinning script located at [Pinned](https://github.com/techcoderx/DTube-IPFS-Bot/tree/master/Pinned) folder executable.
+
+6. Run `node --max_old_space_size=4000 bot.js` to start the Discord bot.
 
 Note: you may need increase the value of `--max_old_space_size` if several large files are being downloaded at once.
 
@@ -44,7 +46,7 @@ You may choose to unpin all IPFS files that were downloaded by a user by doing t
 
 1. Navigate to `Pinned` folder
 
-2. Run `./rmPin.sh DiscordUserID` where `DiscordUserID` is the ID of a Discord user.
+2. Run `./rmPins.sh DiscordUserID` where `DiscordUserID` is the ID of a Discord user.
 
 3. Run `ipfs repo gc` when you're done.
 
