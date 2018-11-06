@@ -34,12 +34,12 @@
     "ERROR_NO_PIN_PERMISSION": "Sorry, you're not in the whitelist, therefore you can't pin 720p, 1080p or source videos!",
     "ERROR_NO_PIN_PERMISSION_RESTRICTED": "Sorry, you're not in the whitelist, therefore you can't run any pinning commands!",
     "BOT_SOURCE": "__***View the source code of the bot on GitHub:***__\nhttps://github.com/techcoderx/DTube-IPFS-Bot",
-    "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
-    "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
-    "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
-    "HELP_IPFS720": "Fetches DTube video at 720p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
-    "HELP_IPFS1080": "Fetches DTube video at 1080p resolution from video.dtube.top and adds to IPFS file pinning queue. This command only supports DTube videos!",
-    "HELP_IPFSSOUND": "Fetches DSound audio file from ipfs.io and adds to IPFS file pinning queue. This command only supports DSound audio!",
+    "HELP_IPFS": "Fetches DTube video at source resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
+    "HELP_IPFS240": "Fetches DTube video at 240p resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
+    "HELP_IPFS480": "Fetches DTube video at 480p resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
+    "HELP_IPFS720": "Fetches DTube video at 720p resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
+    "HELP_IPFS1080": "Fetches DTube video at 1080p resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
+    "HELP_IPFSSOUND": "Fetches DSound audio file from ipfs.io and pins the file to IPFS. This command only supports DSound audio!",
     "HELP_BOTINTRO": "Posts a link to the introtroduceyourself Steemit post about the bot.",
     "HELP_IPFSDONATE": "Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!",
     "HELP_IPFSDEVDONATE": "Support the development of the bot by donating STEEM/SBD to developer!",
@@ -57,5 +57,6 @@
     "ADMIN_HELP_WHITELIST_ADD": "Adds a user to the whitelist by Discord user ID.",
     "ADMIN_HELP_WHITELIST_RM": "Removes a user from the whitelist by Discord user ID.",
     "ADMIN_HELP_WHITELIST_LS": "Lists all users from the whitelist.",
-    "ADMIN_HELP_LIST": "Shows this cheatsheet with all commands available to admins only for this bot."
+    "ADMIN_HELP_LIST": "Shows this cheatsheet with all commands available to admins only for this bot.",
+    "REFRESH_PINS_ALERT": "Pinned hashes list has been refreshed successfully!"
 }

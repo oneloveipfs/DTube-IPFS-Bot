@@ -608,6 +608,9 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
+    } else if (message.content == (Config.commandPrefix + 'refreshpins')) {
+        shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+        sendMessage(message,Config.REFRESH_PINS_ALERT);
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list
