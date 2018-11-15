@@ -37,11 +37,7 @@ bot.on('message', (message) => {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
-                    if (Config.restrictedMode == true) {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
-                    } else {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
-                    }
+                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
                     return;
                 }
             } else {
@@ -252,11 +248,7 @@ bot.on('message', (message) => {
                 var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
-                    if (Config.restrictedMode == true) {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
-                    } else {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
-                    }
+                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
                     return;
                 }
             } else {
@@ -330,11 +322,9 @@ bot.on('message', (message) => {
                 if (readList.includes(message.author.id) != true) {
                     // Do not proceed if user is not in whitelist
                     if (Config.restrictedMode == true) {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
-                    } else {
                         sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
+                        return;
                     }
-                    return;
                 }
             } else {
                 sendMessage(message,Config.WHITELIST_FILE404);
@@ -627,6 +617,7 @@ bot.on('message', (message) => {
             
             embed.addField(Config.commandPrefix + 'ipfssound <link>', Config.HELP_IPFSSOUND);
             embed.addField(Config.commandPrefix + 'botintro', Config.HELP_BOTINTRO);
+            embed.addField(Config.commandPrefix + 'botsource', Config.HELP_BOTSOURCE);
 
             if (Config.donationsAccepted == true) {
                 embed.addField(Config.commandPrefix + 'ipfsdonate <currency> <amount>', Config.HELP_IPFSDONATE);
@@ -653,10 +644,10 @@ bot.on('message', (message) => {
             adminEmbed.addField(Config.commandPrefix + 'ipfsadminhelp', Config.ADMIN_HELP_LIST);
             adminEmbed.setColor(0x499293);
             message.member.send(adminEmbed);
+        } else if (Config.silentModeEnabled != true && message.member.hasPermission('ADMINISTRATOR') == true) {
+            message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
         } else {
-            if (Config.silentModeEnabled != true) {
-                message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
-            }
+            sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
     }
 });

@@ -41,6 +41,7 @@
     "HELP_IPFS1080": "Fetches DTube video at 1080p resolution from video.dtube.top and pins the file to IPFS. This command only supports DTube videos!",
     "HELP_IPFSSOUND": "Fetches DSound audio file from ipfs.io and pins the file to IPFS. This command only supports DSound audio!",
     "HELP_BOTINTRO": "Posts a link to the introtroduceyourself Steemit post about the bot.",
+    "HELP_BOTSOURCE": "Posts a GitHub link to the source code of the bot.",
     "HELP_IPFSDONATE": "Support the community for hosting the bot and IPFS files by donating STEEM/SBD to community Steem account!",
     "HELP_IPFSDEVDONATE": "Support the development of the bot by donating STEEM/SBD to developer!",
     "HELP_WHITELIST_CHECK": "Check if you're in the whitelist!",
