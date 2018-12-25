@@ -1,6 +1,6 @@
 {
     "____BotSettings____": "Insert bot config info here",
-    "steemAPIURL": "https://api.steemit.com",
+    "steemAPIURL": "https://steemd.minnowsupportproject.org",
     "communityAccount": "",
     "trickledag": false,
     "silentModeEnabled": false,
