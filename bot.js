@@ -146,6 +146,25 @@ bot.on('message', (message) => {
             }
 
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
+            
+            var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+            var request = new XMLHttpRequest();
+            request.open("HEAD", ipfslink, false);
+            request.send();
+            var isOnGateway = false;
+            if(request.readyState === request.HEADERS_RECEIVED) {
+                if(request.status === 200) {
+                    isOnGateway = true
+                }
+            }
+            if(isOnGateway === false) {
+                PinDtubeVideoToIPFS()
+                addHashToDatabase(message,ipfs240hash);
+                PinDtubeVideoToIPFS(message,ipfs240hash);
+                return;
+            }
+            
+            
 
             // Download file to server!
             let download = WGET.download(ipfslink,'./' + ipfs240hash);
@@ -215,7 +234,23 @@ bot.on('message', (message) => {
             }
 
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
-
+            var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+            var request = new XMLHttpRequest();
+            request.open("HEAD", ipfslink, false);
+            request.send();
+            var isOnGateway = false;
+            if(request.readyState === request.HEADERS_RECEIVED) {
+                if(request.status === 200) {
+                    isOnGateway = true
+                }
+            }
+            if(isOnGateway === false) {
+                PinDtubeVideoToIPFS()
+                addHashToDatabase(message,ipfs240hash);
+                PinDtubeVideoToIPFS(message,ipfs240hash);
+                return;
+            }
+            
             // Download file to server!
             let download = WGET.download(ipfslink,'./' + ipfs480hash);
 
@@ -288,7 +323,24 @@ bot.on('message', (message) => {
             }
 
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
-
+            
+            var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+            var request = new XMLHttpRequest();
+            request.open("HEAD", ipfslink, false);
+            request.send();
+            var isOnGateway = false;
+            if(request.readyState === request.HEADERS_RECEIVED) {
+                if(request.status === 200) {
+                    isOnGateway = true
+                }
+            }
+            if(isOnGateway === false) {
+                PinDtubeVideoToIPFS()
+                addHashToDatabase(message,ipfs240hash);
+                PinDtubeVideoToIPFS(message,ipfs240hash);
+                return;
+            }
+            
             // Download file to server!
             let download = WGET.download(ipfslink,'./' + ipfs720hash);
 
@@ -363,7 +415,24 @@ bot.on('message', (message) => {
             }
 
             var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
-
+            
+            var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+            var request = new XMLHttpRequest();
+            request.open("HEAD", ipfslink, false);
+            request.send();
+            var isOnGateway = false;
+            if(request.readyState === request.HEADERS_RECEIVED) {
+                if(request.status === 200) {
+                    isOnGateway = true
+                }
+            }
+            if(isOnGateway === false) {
+                PinDtubeVideoToIPFS()
+                addHashToDatabase(message,ipfs240hash);
+                PinDtubeVideoToIPFS(message,ipfs240hash);
+                return;
+            }
+            
             // Download file to server!
             let download = WGET.download(ipfslink,'./' + ipfs1080hash);
 
@@ -675,6 +744,17 @@ function addHashToDatabase(msg,hash) {
         fs.writeFileSync('./Pinned/' + uid + '.txt', readData + hash + '\n');
     } else {
         fs.writeFileSync('./Pinned/' + uid+ '.txt', hash + '\n')
+    }
+}
+function PinDtubeVideoToIPFS(msg, hash) {
+    if (processExists('ipfs daemon')) {
+        shell.exec('ipfs pin add ' + hash, function() {
+                shell.exec('ipfs pin add ' + hash, function() {
+                    msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
+                    shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                    shell.rm(hash);
+                });
+            });
     }
 }
 
