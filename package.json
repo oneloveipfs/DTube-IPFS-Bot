@@ -10,6 +10,7 @@
         "process-exists": "^3.1.0",
         "shelljs": "^0.8.2",
         "steem": "^0.7.1",
-        "wget-improved": "^3.0.1"
+        "wget-improved": "^3.0.1",
+        "xmlhttprequest": "1.8.0"
     }
 }
