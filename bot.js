@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const WGET = require('wget-improved');
+const IPFS = require('ipfs-http-client')('localhost',5001,{protocol: 'http'})
 const Steem = require('steem');
 const Auth = require('./auth.json');
 const Config = require('./config.json');
@@ -72,7 +73,7 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(ipfshash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
@@ -140,7 +141,7 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(ipfs240hash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
@@ -209,7 +210,7 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(ipfs480hash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
@@ -282,7 +283,7 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(ipfs720hash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
@@ -357,7 +358,7 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(ipfs1080hash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
@@ -410,12 +411,12 @@ bot.on('message', (message) => {
                 var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
                 if (readPinnedList.includes(dsoundhash)) {
                     // File already pinned
-                    sendMessage(message,Config.ERROR_FILE_ALREADY_PINNED);
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
                     return;
                 }
             }
 
-            var dsoundipfslink = 'https://ipfs.io/ipfs/' + dsoundhash;
+            let dsoundipfslink = 'https://cloudflare-ipfs.com/ipfs/' + dsoundhash;
 
             // Download video to server!
             let download = WGET.download(dsoundipfslink,'./' + dsoundhash);
@@ -436,13 +437,23 @@ bot.on('message', (message) => {
                 addHashToDatabase(message,dsoundhash)
                 if (processExists('ipfs daemon')) {
                     // Pin files only if daemon is running
-                    shell.exec('ipfs add ' + dsoundhash, function() {
-                        shell.exec('ipfs pin add ' + dsoundhash, function() {
-                            message.reply(Config.AUDIO_DOWNLOAD_COMPLETE);
+                   fs.readFile(dsoundhash,(err,data) => {
+                        if (err != null) {
+                            message.channel.send('Error reading downloaded file: ' + err)
+                            return
+                        } 
+                        IPFS.add(data,{trickle: false},(err,resulthash) => {
+                            if (err != null) {
+                                message.channel.send('Error pinning file to IPFS: ' + err)
+                                return
+                            }
+                            message.reply(Config.AUDIO_DOWNLOAD_COMPLETE)
                             shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                            shell.rm('Qm*');
-                        });
-                    });
+                            if (Config.rmOriginal == true) {
+                                shell.rm(dsoundhash);
+                            }
+                        })
+                    })
                 }
             });
         });
@@ -681,25 +692,25 @@ function addHashToDatabase(msg,hash) {
 function addDTubeVideoToIPFS(msg,hash) {
     if (processExists('ipfs daemon')) {
         // Pin files only if daemon is running
-        if (Config.trickledag == true) {
-            shell.exec('ipfs add ' + hash + ' -t', function() {
-                shell.exec('ipfs pin add ' + hash, function() {
-                    msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
-                    shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+        let trickle = false
+        if (Config.trickledag == true) trickle = true
+        fs.readFile(hash,(err,data) => {
+            if (err != null) {
+                msg.channel.send('Error reading downloaded file: ' + err)
+                return
+            } 
+            IPFS.add(data,{trickle: trickle},(err) => {
+                if (err != null) {
+                    msg.channel.send('Error pinning file to IPFS: ' + err)
+                    return
+                }
+                msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE)
+                shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
+                if (Config.rmOriginal == true) {
                     shell.rm(hash);
-                });
-            });
-        } else {
-            shell.exec('ipfs add ' + hash, function() {
-                shell.exec('ipfs pin add ' + hash, function() {
-                    msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE);
-                    shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                    if (Config.rmOriginal == true) {
-                        shell.rm(hash);
-                    }
-                });
-            });
-        }
+                }
+            })
+        })
     }
 }
 
