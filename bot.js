@@ -1,11 +1,10 @@
+const Config = require('./config.json');
 const Discord = require('discord.js');
 const WGET = require('wget-improved');
-const IPFS = require('ipfs-http-client')('localhost',5001,{protocol: 'http'})
+const IPFS = require('ipfs-http-client')('localhost',Config.IPFS_API_Port,{protocol: 'http'})
 const Steem = require('steem');
 const Auth = require('./auth.json');
-const Config = require('./config.json');
 const fs = require('fs');
-const processExists = require('process-exists');
 
 const bot = new Discord.Client();
 
@@ -91,7 +90,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfshash);
-                        addDTubeVideoToIPFS(message,ipfshash);
+                        addDTubeVideoToIPFS(message,ipfshash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -158,7 +157,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs240hash);
-                        addDTubeVideoToIPFS(message,ipfs240hash);
+                        addDTubeVideoToIPFS(message,ipfs240hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
                 }
             })            
@@ -223,7 +222,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs480hash);
-                        addDTubeVideoToIPFS(message,ipfs480hash);
+                        addDTubeVideoToIPFS(message,ipfs480hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
                 }
             })
@@ -293,7 +292,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs720hash);
-                        addDTubeVideoToIPFS(message,ipfs720hash);
+                        addDTubeVideoToIPFS(message,ipfs720hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
                 }
             })
@@ -365,7 +364,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs1080hash);
-                        addDTubeVideoToIPFS(message,ipfs1080hash);
+                        addDTubeVideoToIPFS(message,ipfs1080hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
                 }
             })
@@ -415,23 +414,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,dsoundhash)
-                        if (processExists('ipfs daemon')) {
-                            // Pin files only if daemon is running
-                            fs.readFile(dsoundhash,(err,data) => {
-                                if (err != null) {
-                                    message.channel.send('Error reading downloaded file: ' + err)
-                                    return
-                                } 
-                                IPFS.add(data,{trickle: false},(err) => {
-                                    if (err != null) {
-                                        message.channel.send('Error pinning file to IPFS: ' + err)
-                                        return
-                                    }
-                                    message.reply(Config.AUDIO_DOWNLOAD_COMPLETE)
-                                    fs.unlink(dsoundhash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
-                                })
-                            })
-                        }
+                        addDTubeVideoToIPFS(message,dsoundhash,false,Config.AUDIO_DOWNLOAD_COMPLETE)
                     });
                 }
             })
@@ -665,26 +648,22 @@ function addHashToDatabase(msg,hash) {
     }
 }
 
-function addDTubeVideoToIPFS(msg,hash) {
-    if (processExists('ipfs daemon')) {
-        // Pin files only if daemon is running
-        let trickle = false
-        if (Config.trickledag == true) trickle = true
-        fs.readFile(hash,(err,data) => {
+function addDTubeVideoToIPFS(msg,hash,trickle,doneMsg) {
+    // Pin files to IPFS
+    fs.readFile(hash,(err,data) => {
+        if (err != null) {
+            msg.channel.send('Error reading downloaded file: ' + err)
+            return
+        } 
+        IPFS.add(data,{trickle: trickle},(err) => {
             if (err != null) {
-                msg.channel.send('Error reading downloaded file: ' + err)
+                msg.channel.send('Error pinning file to IPFS: ' + err)
                 return
-            } 
-            IPFS.add(data,{trickle: trickle},(err) => {
-                if (err != null) {
-                    msg.channel.send('Error pinning file to IPFS: ' + err)
-                    return
-                }
-                msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE)
-                fs.unlink(hash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
-            })
+            }
+            msg.reply(doneMsg)
+            fs.unlink(hash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
         })
-    }
+    })
 }
 
 function isEmptyObject(obj) {

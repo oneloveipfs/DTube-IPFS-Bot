@@ -1,6 +1,7 @@
 {
     "____BotSettings____": "Insert bot config info here",
     "steemAPIURL": "https://steemd.minnowsupportproject.org",
+    "IPFS_API_Port": 5001,
     "communityAccount": "",
     "trickledag": false,
     "silentModeEnabled": false,
