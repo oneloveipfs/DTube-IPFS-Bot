@@ -5,7 +5,6 @@ const Steem = require('steem');
 const Auth = require('./auth.json');
 const Config = require('./config.json');
 const fs = require('fs');
-const shell = require('shelljs');
 const processExists = require('process-exists');
 
 const bot = new Discord.Client();
@@ -69,36 +68,35 @@ bot.on('message', (message) => {
             // Get IPFS hash of source video file
             var ipfshash = jsonmeta.video.content.videohash;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(ipfshash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(ipfshash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === ipfshash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + ipfshash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
+
+                    // Download file to server!
+                    let download = WGET.download(ipfslink,'./' + ipfshash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get file size in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,ipfshash);
+                        addDTubeVideoToIPFS(message,ipfshash);
+                    });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
-            }
-
-            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
-
-            // Download file to server!
-            let download = WGET.download(ipfslink,'./' + ipfshash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get file size in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,ipfshash);
-                addDTubeVideoToIPFS(message,ipfshash);
-            });
+            })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
         if (Config.restrictedMode == true) {
@@ -137,37 +135,33 @@ bot.on('message', (message) => {
 
             var ipfs240hash = jsonmeta.video.content.video240hash;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(ipfs240hash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(ipfs240hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === ipfs240hash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + ipfs240hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
+
+                    // Download file to server!
+                    let download = WGET.download(ipfslink,'./' + ipfs240hash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get file size in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,ipfs240hash);
+                        addDTubeVideoToIPFS(message,ipfs240hash);
+                    });
                 }
-            }
-
-            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
-
-            // Download file to server!
-            let download = WGET.download(ipfslink,'./' + ipfs240hash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get file size in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,ipfs240hash);
-                addDTubeVideoToIPFS(message,ipfs240hash);
-            });
-            
+            })            
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs480 ')) {
         if (Config.restrictedMode == true) {
@@ -206,36 +200,33 @@ bot.on('message', (message) => {
 
             var ipfs480hash = jsonmeta.video.content.video480hash;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(ipfs480hash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(ipfs480hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === ipfs480hash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + ipfs480hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
+
+                    // Download file to server!
+                    let download = WGET.download(ipfslink,'./' + ipfs480hash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get file size in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,ipfs480hash);
+                        addDTubeVideoToIPFS(message,ipfs480hash);
+                    });
                 }
-            }
-
-            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
-
-            // Download file to server!
-            let download = WGET.download(ipfslink,'./' + ipfs480hash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get file size in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,ipfs480hash);
-                addDTubeVideoToIPFS(message,ipfs480hash);
-            });
+            })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
@@ -279,36 +270,33 @@ bot.on('message', (message) => {
 
             var ipfs720hash = jsonmeta.video.content.video720hash;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(ipfs720hash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(ipfs720hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === ipfs720hash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + ipfs720hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
+
+                    // Download file to server!
+                    let download = WGET.download(ipfslink,'./' + ipfs720hash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get file size in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,ipfs720hash);
+                        addDTubeVideoToIPFS(message,ipfs720hash);
+                    });
                 }
-            }
-
-            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
-
-            // Download file to server!
-            let download = WGET.download(ipfslink,'./' + ipfs720hash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get file size in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,ipfs720hash);
-                addDTubeVideoToIPFS(message,ipfs720hash);
-            });
+            })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
@@ -354,36 +342,33 @@ bot.on('message', (message) => {
 
             var ipfs1080hash = jsonmeta.video.content.video1080hash;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(ipfs1080hash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(ipfs1080hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === ipfs1080hash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + ipfs1080hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
+
+                    // Download file to server!
+                    let download = WGET.download(ipfslink,'./' + ipfs1080hash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get file size in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,ipfs1080hash);
+                        addDTubeVideoToIPFS(message,ipfs1080hash);
+                    });
                 }
-            }
-
-            var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
-
-            // Download file to server!
-            let download = WGET.download(ipfslink,'./' + ipfs1080hash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get file size in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,ipfs1080hash);
-                addDTubeVideoToIPFS(message,ipfs1080hash);
-            });
+            })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
         // DSound audio
@@ -407,55 +392,49 @@ bot.on('message', (message) => {
 
             var dsoundhash = jsonmeta.audio.files.sound;
 
-            if (fs.existsSync('./Pinned/AllPinned.txt')) {
-                var readPinnedList = fs.readFileSync('./Pinned/AllPinned.txt', 'utf8');
-                if (readPinnedList.includes(dsoundhash)) {
-                    // File already pinned
-                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED);
-                    return;
+            IPFS.pin.ls(dsoundhash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === dsoundhash) {
+                    message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
+                } else if (err == 'Error: path \'' + dsoundhash + '\' is not pinned') {
+                    let dsoundipfslink = 'https://cloudflare-ipfs.com/ipfs/' + dsoundhash;
+
+                    // Download video to server!
+                    let download = WGET.download(dsoundipfslink,'./' + dsoundhash);
+
+                    download.on('error',function(err) {
+                        // Download error
+                        sendMessage(message,Config.ERROR_DOWNLOAD + err);
+                    });
+
+                    download.on('start',function(filesize) {
+                        // Get filesize in MB
+                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        sendMessage(message,Config.AUDIO_DOWNLOAD_MESSAGE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
+                    });
+
+                    download.on('end',function() {
+                        // Adds ipfs hash to user database and pins file to IPFS node
+                        addHashToDatabase(message,dsoundhash)
+                        if (processExists('ipfs daemon')) {
+                            // Pin files only if daemon is running
+                            fs.readFile(dsoundhash,(err,data) => {
+                                if (err != null) {
+                                    message.channel.send('Error reading downloaded file: ' + err)
+                                    return
+                                } 
+                                IPFS.add(data,{trickle: false},(err) => {
+                                    if (err != null) {
+                                        message.channel.send('Error pinning file to IPFS: ' + err)
+                                        return
+                                    }
+                                    message.reply(Config.AUDIO_DOWNLOAD_COMPLETE)
+                                    fs.unlink(dsoundhash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
+                                })
+                            })
+                        }
+                    });
                 }
-            }
-
-            let dsoundipfslink = 'https://cloudflare-ipfs.com/ipfs/' + dsoundhash;
-
-            // Download video to server!
-            let download = WGET.download(dsoundipfslink,'./' + dsoundhash);
-
-            download.on('error',function(err) {
-                // Download error
-                sendMessage(message,Config.ERROR_DOWNLOAD + err);
-            });
-
-            download.on('start',function(filesize) {
-                // Get filesize in MB
-                var humanreadableFS = (filesize / 1048576).toFixed(2);
-                sendMessage(message,Config.AUDIO_DOWNLOAD_MESSAGE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
-            });
-
-            download.on('end',function() {
-                // Adds ipfs hash to user database and pins file to IPFS node
-                addHashToDatabase(message,dsoundhash)
-                if (processExists('ipfs daemon')) {
-                    // Pin files only if daemon is running
-                   fs.readFile(dsoundhash,(err,data) => {
-                        if (err != null) {
-                            message.channel.send('Error reading downloaded file: ' + err)
-                            return
-                        } 
-                        IPFS.add(data,{trickle: false},(err,resulthash) => {
-                            if (err != null) {
-                                message.channel.send('Error pinning file to IPFS: ' + err)
-                                return
-                            }
-                            message.reply(Config.AUDIO_DOWNLOAD_COMPLETE)
-                            shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                            if (Config.rmOriginal == true) {
-                                shell.rm(dsoundhash);
-                            }
-                        })
-                    })
-                }
-            });
+            })
         });
     } else if (message.content == (Config.commandPrefix + 'botintro')) {
         if (Config.silentModeEnabled != true) {
@@ -609,9 +588,6 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
-    } else if (message.content == (Config.commandPrefix + 'refreshpins')) {
-        shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-        sendMessage(message,Config.REFRESH_PINS_ALERT);
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list
@@ -705,10 +681,7 @@ function addDTubeVideoToIPFS(msg,hash) {
                     return
                 }
                 msg.reply(Config.VIDEO_DOWNLOAD_COMPLETE)
-                shell.exec('ipfs pin ls -t recursive > Pinned/AllPinned.txt');
-                if (Config.rmOriginal == true) {
-                    shell.rm(hash);
-                }
+                fs.unlink(hash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
             })
         })
     }

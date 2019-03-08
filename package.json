@@ -5,12 +5,11 @@
     "main": "bot.js",
     "author": "techcoderx",
     "dependencies": {
-        "discord.js": "^11.3.2",
+        "discord.js": "^11.4.2",
         "fs": "0.0.1-security",
         "ipfs-http-client": "^29.1.1",
         "process-exists": "^3.1.0",
-        "shelljs": "^0.8.2",
-        "steem": "^0.7.1",
-        "wget-improved": "^3.0.1"
+        "steem": "^0.7.4",
+        "wget-improved": "^3.0.2"
     }
 }
