@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const WGET = require('wget-improved');
 const IPFS = require('ipfs-http-client')('localhost',Config.IPFS_API_Port,{protocol: 'http'})
 const Steem = require('steem');
+const async = require('async')
 const Auth = require('./auth.json');
 const fs = require('fs');
 
@@ -159,6 +160,8 @@ bot.on('message', (message) => {
                         addHashToDatabase(message,ipfs240hash);
                         addDTubeVideoToIPFS(message,ipfs240hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })            
         });
@@ -224,6 +227,8 @@ bot.on('message', (message) => {
                         addHashToDatabase(message,ipfs480hash);
                         addDTubeVideoToIPFS(message,ipfs480hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })
         });
@@ -294,6 +299,8 @@ bot.on('message', (message) => {
                         addHashToDatabase(message,ipfs720hash);
                         addDTubeVideoToIPFS(message,ipfs720hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })
         });
@@ -366,6 +373,8 @@ bot.on('message', (message) => {
                         addHashToDatabase(message,ipfs1080hash);
                         addDTubeVideoToIPFS(message,ipfs1080hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
                     });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })
         });
@@ -416,6 +425,8 @@ bot.on('message', (message) => {
                         addHashToDatabase(message,dsoundhash)
                         addDTubeVideoToIPFS(message,dsoundhash,false,Config.AUDIO_DOWNLOAD_COMPLETE)
                     });
+                } else {
+                    message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })
         });
@@ -571,6 +582,64 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
+    } else if (message.content == Config.commandPrefix + 'stats') {
+        let statops = {
+            bw: (cb) => {
+                IPFS.stats.bw((err,stat) => {
+                    if (err != null) {
+                        console.log(err)
+                        cb(err,null)
+                        return
+                    }
+                    let incomingbw = Math.floor(stat.rateIn / 10.24) / 100 + ' KB/s'
+                    let outgoingbw = Math.floor(stat.rateOut / 10.24) / 100 + ' KB/s'
+
+                    if (stat.rateIn > 1000000) 
+                        incomingbw = Math.floor(stat.rateIn / 10485.76) / 100 + ' MB/s'
+                    
+                    if (stat.rateOut > 1000000)
+                        outgoingbw = Math.floor(stat.rateOut / 10485.76) / 100 + ' MB/s'
+                    cb(null,{
+                        in: incomingbw,
+                        out: outgoingbw
+                    })
+                })
+            },
+            storage: (cb) => {
+                IPFS.stats.repo({human: true},(err,stat) => {
+                    if (err != null) {
+                        console.log(err)
+                        cb(err,null)
+                        return
+                    }
+                    let size = Math.floor(stat.repoSize / 10485.76) / 100 + ' MB'
+                    if (stat.repoSize > 1000000000)
+                        size = Math.floor(stat.repoSize / 10737418.24) / 100 + ' GB'
+                    cb(null,size)
+                })
+            },
+            pincount: (cb) => {
+                IPFS.pin.ls({type: 'recursive'},(err,pinset) => {
+                    if (err != null) {
+                        console.log(err)
+                        cb(err,null)
+                        return
+                    }
+                    cb(null,pinset.length)
+                })
+            }
+        }
+        async.parallel(statops,(err,results) => {
+            if (err != null) {
+                message.channel.send(Config.IPFS_STAT_ERROR)
+            } else {
+                let embed = new Discord.RichEmbed()
+                embed.setTitle(Config.IPFS_STAT_EMBED_TITLE)
+                embed.setDescription('Bandwidth In: ' + results.bw.in + '\nBandwidth Out: ' + results.bw.out + '\nNo. of pins: ' + results.pincount + '\nUsed storage: ' + results.storage)
+                embed.setColor(0x499293);
+                message.channel.send(embed)
+            }
+        })
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list

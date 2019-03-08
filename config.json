@@ -49,6 +49,8 @@
     "HELP_IPFSHELP": "Shows this cheatsheet with all available commands for this bot.",
     "HELP_PING": "Use this to check if bots are online!",
     "IPFS_PIN_LS_ERROR": "IPFS API error: ",
+    "IPFS_STAT_ERROR": "An error occured! Check the logs for more details.",
+    "IPFS_STAT_EMBED_TITLE": "IPFS Node Stats",
     "WHITELIST_FILE404": "Hmmm the whitelist file doesn't exist in this bot. Perhaps the file could have been misplaced in the bot server? :thinking:",
     "WHITELIST_TRUE": "You're in the whitelist! You may pin your DTube videos at 720p, 1080p and source resolution to our IPFS node :wink:",
     "WHITELIST_FALSE": "Sorry, you're not in the whitelist. Perhaps contact the admins of this server to find out how to get there? :thinking:",
