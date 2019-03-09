@@ -627,6 +627,16 @@ bot.on('message', (message) => {
                     }
                     cb(null,pinset.length)
                 })
+            },
+            peercount: (cb) => {
+                IPFS.swarm.peers((err,peers) => {
+                    if (err != null) {
+                        console.log(err)
+                        cb(err,null)
+                        return
+                    }
+                    cb(null,peers.length)
+                })
             }
         }
         async.parallel(statops,(err,results) => {
@@ -635,7 +645,7 @@ bot.on('message', (message) => {
             } else {
                 let embed = new Discord.RichEmbed()
                 embed.setTitle(Config.IPFS_STAT_EMBED_TITLE)
-                embed.setDescription('Bandwidth In: ' + results.bw.in + '\nBandwidth Out: ' + results.bw.out + '\nNo. of pins: ' + results.pincount + '\nUsed storage: ' + results.storage)
+                embed.setDescription('Bandwidth In: ' + results.bw.in + '\nBandwidth Out: ' + results.bw.out + '\nPeers connected: ' + results.peercount + '\nNo. of pins: ' + results.pincount + '\nUsed storage: ' + results.storage)
                 embed.setColor(0x499293);
                 message.channel.send(embed)
             }
