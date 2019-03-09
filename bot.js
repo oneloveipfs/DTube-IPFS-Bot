@@ -582,7 +582,11 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
-    } else if (message.content == Config.commandPrefix + 'stats') {
+    } else if (message.content.startsWith(Config.commandPrefix + 'stats')) {
+        if (message.content.split(' ').length > 1) {
+            let specifiedID = message.content.slice(Config.commandPrefix.length + 6,message.content.length)
+            if (specifiedID != Config.nodeID) return
+        }
         let statops = {
             bw: (cb) => {
                 IPFS.stats.bw((err,stat) => {
@@ -677,6 +681,7 @@ bot.on('message', (message) => {
                 embed.addField(Config.commandPrefix + 'hdwhitelist check', Config.HELP_WHITELIST_CHECK);
             }
 
+            embed.addField(Config.commandPrefix + 'stats [node ID]', Config.HELP_STATS)
             embed.addField(Config.commandPrefix + 'ipfshelp', Config.HELP_IPFSHELP);
             embed.addField(Config.commandPrefix + 'ping', Config.HELP_PING);
             embed.setColor(0x499293);
