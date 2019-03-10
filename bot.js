@@ -9,6 +9,8 @@ const fs = require('fs');
 
 const bot = new Discord.Client();
 
+let usageData = JSON.parse(fs.readFileSync('usage.json','utf8'))
+
 Steem.api.setOptions({url: Config.steemAPIURL});
 
 if (Config.commandPrefix == "") {
@@ -84,8 +86,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get file size in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -151,8 +154,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get file size in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -218,8 +222,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get file size in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -290,8 +295,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get file size in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -364,8 +370,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get file size in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -416,8 +423,9 @@ bot.on('message', (message) => {
 
                     download.on('start',function(filesize) {
                         // Get filesize in MB
-                        var humanreadableFS = (filesize / 1048576).toFixed(2);
+                        let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.AUDIO_DOWNLOAD_MESSAGE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
+                        countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
@@ -574,6 +582,7 @@ bot.on('message', (message) => {
                 finalListToDM = finalListToDM.slice(0,-4);
                 finalListToDM = 'Whitelisted users: \n' + finalListToDM;
                 if (Config.silentModeEnabled != true) {
+                    message.react('📬')
                     message.member.send(finalListToDM);
                 }
             } else {
@@ -654,6 +663,30 @@ bot.on('message', (message) => {
                 message.channel.send(embed)
             }
         })
+    } else if (message.content == (Config.commandPrefix + 'usage')) {
+        let usage = usageData[message.author.id]
+        if (usage > 1000000000) {
+            usage = Math.floor(usage / 10737418.24) / 100 + ' GB'
+        } else if (usage > 1000000) {
+            usage = Math.floor(usage / 10485.76) / 100 + ' MB'
+        } else if (usage == undefined) {
+            usage = '0 KB'
+        } else {
+            usage = Math.floor(usage / 10.24) / 100 + ' KB'
+        }
+        replyMessage(message,'Your current usage is ' + usage)
+    } else if (message.content == (Config.commandPrefix + 'usagels')) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            message.react('📬')
+            if (Config.silentModeEnabled != true) {
+                message.member.send({files: [{
+                    attachment: 'usage.json',
+                    name: 'usage.json'
+                }]})
+            }
+        } else {
+            message.channel.send(Config.ERROR_NO_PERMISSION)
+        }
     } else if (message.content == (Config.commandPrefix + 'ipfshelp')) {
         if (Config.silentModeEnabled != true) {
             // Bot command list
@@ -695,8 +728,10 @@ bot.on('message', (message) => {
             adminEmbed.addField(Config.commandPrefix + 'hdwhitelist add <user>', Config.ADMIN_HELP_WHITELIST_ADD);
             adminEmbed.addField(Config.commandPrefix + 'hdwhitelist rm <user>', Config.ADMIN_HELP_WHITELIST_RM);
             adminEmbed.addField(Config.commandPrefix + 'hdwhitelist ls <user>', Config.ADMIN_HELP_WHITELIST_LS);
+            adminEmbed.addField(Config.commandPrefix + 'usagels', Config.ADMIN_HELP_USAGE_LS)
             adminEmbed.addField(Config.commandPrefix + 'ipfsadminhelp', Config.ADMIN_HELP_LIST);
             adminEmbed.setColor(0x499293);
+            message.react('📬')
             message.member.send(adminEmbed);
         } else if (Config.silentModeEnabled != true && message.member.hasPermission('ADMINISTRATOR') == true) {
             message.member.send(Config.ADMIN_HELP_WHITELIST_FALSE);
@@ -747,6 +782,18 @@ function addDTubeVideoToIPFS(msg,hash,trickle,doneMsg) {
             msg.reply(doneMsg)
             fs.unlink(hash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
         })
+    })
+}
+
+function countUsage(userid,filesize) {
+    if (usageData[userid] == undefined) {
+        usageData[userid] = filesize
+    } else {
+        usageData[userid] = usageData[userid] + filesize
+    }
+    fs.writeFile('usage.json',JSON.stringify(usageData,null,4),(err) => {
+        if (err != null)
+            console.log(err)
     })
 }
 

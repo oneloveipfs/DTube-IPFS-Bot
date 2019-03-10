@@ -64,6 +64,7 @@
     "ADMIN_HELP_WHITELIST_ADD": "Adds a user to the whitelist by Discord user ID.",
     "ADMIN_HELP_WHITELIST_RM": "Removes a user from the whitelist by Discord user ID.",
     "ADMIN_HELP_WHITELIST_LS": "Lists all users from the whitelist.",
+    "ADMIN_HELP_USAGE_LS": "Sends you a JSON file containing disk usage data in DM.",
     "ADMIN_HELP_LIST": "Shows this cheatsheet with all commands available to admins only for this bot.",
     "REFRESH_PINS_ALERT": "Pinned hashes list has been refreshed successfully!"
 }
