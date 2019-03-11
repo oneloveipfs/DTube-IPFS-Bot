@@ -94,7 +94,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfshash);
-                        addDTubeVideoToIPFS(message,ipfshash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
+                        addDTubeVideoToIPFS(message,ipfshash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'Source');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -162,7 +162,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs240hash);
-                        addDTubeVideoToIPFS(message,ipfs240hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
+                        addDTubeVideoToIPFS(message,ipfs240hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'240p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -230,7 +230,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs480hash);
-                        addDTubeVideoToIPFS(message,ipfs480hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
+                        addDTubeVideoToIPFS(message,ipfs480hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'480p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -303,7 +303,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs720hash);
-                        addDTubeVideoToIPFS(message,ipfs720hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
+                        addDTubeVideoToIPFS(message,ipfs720hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'720p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -378,7 +378,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,ipfs1080hash);
-                        addDTubeVideoToIPFS(message,ipfs1080hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE);
+                        addDTubeVideoToIPFS(message,ipfs1080hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'1080p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -431,7 +431,7 @@ bot.on('message', (message) => {
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
                         addHashToDatabase(message,dsoundhash)
-                        addDTubeVideoToIPFS(message,dsoundhash,false,Config.AUDIO_DOWNLOAD_COMPLETE)
+                        addDTubeVideoToIPFS(message,dsoundhash,false,Config.AUDIO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'Audio file')
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -767,7 +767,7 @@ function addHashToDatabase(msg,hash) {
     }
 }
 
-function addDTubeVideoToIPFS(msg,hash,trickle,doneMsg) {
+function addDTubeVideoToIPFS(msg,hash,trickle,doneMsg,author,permlink,res) {
     // Pin files to IPFS
     fs.readFile(hash,(err,data) => {
         if (err != null) {
@@ -779,7 +779,7 @@ function addDTubeVideoToIPFS(msg,hash,trickle,doneMsg) {
                 msg.channel.send('Error pinning file to IPFS: ' + err)
                 return
             }
-            msg.reply(doneMsg)
+            msg.channel.send('`@' + author + '/' + permlink + '(' + res + ')`: ' + doneMsg)
             fs.unlink(hash,(err) => {if (err != null) console.log('Error deleting file: ' + err)})
         })
     })

@@ -9,7 +9,6 @@
     "hdwhitelistEnabled": true,
     "restrictedMode": true,
     "donationsAccepted": true,
-    "rmOriginal": true,
     "commandPrefix": "!",
     "nodeID": 1,
 
