@@ -65,10 +65,15 @@ bot.on('message', (message) => {
             }
             
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
+            let jsonmeta = JSON.parse(result.json_metadata)
 
             // Get IPFS hash of source video file
-            var ipfshash = jsonmeta.video.content.videohash;
+            let ipfshash = jsonmeta.video.content.videohash
+
+            if (ipfshash == undefined || null) {
+                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                return
+            }
 
             IPFS.pin.ls(ipfshash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === ipfshash) {
@@ -134,9 +139,13 @@ bot.on('message', (message) => {
             }
             
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
+            let jsonmeta = JSON.parse(result.json_metadata);
+            let ipfs240hash = jsonmeta.video.content.video240hash;
 
-            var ipfs240hash = jsonmeta.video.content.video240hash;
+            if (ipfs240hash == undefined || null) {
+                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                return
+            }
 
             IPFS.pin.ls(ipfs240hash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === ipfs240hash) {
@@ -202,9 +211,13 @@ bot.on('message', (message) => {
             }
             
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
+            let jsonmeta = JSON.parse(result.json_metadata)
+            let ipfs480hash = jsonmeta.video.content.video480hash
 
-            var ipfs480hash = jsonmeta.video.content.video480hash;
+            if (ipfs480hash == undefined || null) {
+                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                return
+            }
 
             IPFS.pin.ls(ipfs480hash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === ipfs480hash) {
@@ -275,9 +288,13 @@ bot.on('message', (message) => {
             }
             
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
+            let jsonmeta = JSON.parse(result.json_metadata)
+            let ipfs720hash = jsonmeta.video.content.video720hash
 
-            var ipfs720hash = jsonmeta.video.content.video720hash;
+            if (ipfs720hash == undefined || null) {
+                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                return
+            }
 
             IPFS.pin.ls(ipfs720hash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === ipfs720hash) {
@@ -350,9 +367,13 @@ bot.on('message', (message) => {
             }
             
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
+            let jsonmeta = JSON.parse(result.json_metadata)
+            let ipfs1080hash = jsonmeta.video.content.video1080hash
 
-            var ipfs1080hash = jsonmeta.video.content.video1080hash;
+            if (ipfs1080hash == undefined || null) {
+                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                return
+            }
 
             IPFS.pin.ls(ipfs1080hash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === ipfs1080hash) {
