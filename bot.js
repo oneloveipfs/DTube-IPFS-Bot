@@ -10,8 +10,17 @@ const fs = require('fs');
 const bot = new Discord.Client();
 
 let usageData = JSON.parse(fs.readFileSync('usage.json','utf8'))
+let ipfsid;
 
 Steem.api.setOptions({url: Config.steemAPIURL});
+
+IPFS.id((err,id) => {
+    if (err != null) {
+        console.log('IPFS error: ' + err)
+        process.exit(1)
+    }
+    ipfsid = id.id
+})
 
 if (Config.commandPrefix == "") {
     // Terminate bot if no command prefix provided
@@ -612,10 +621,15 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
+    } else if (message.content == (Config.commandPrefix + 'myid')) {
+        let idEmbed = new Discord.RichEmbed()
+        idEmbed.setDescription(Config.IPFS_ID_MESSAGE_PREFIX + ipfsid)
+        idEmbed.setColor(0x45ff42)
+        message.channel.send(idEmbed)
     } else if (message.content.startsWith(Config.commandPrefix + 'stats')) {
         if (message.content.split(' ').length > 1) {
             let specifiedID = message.content.slice(Config.commandPrefix.length + 6,message.content.length)
-            if (specifiedID != Config.nodeID) return
+            if (specifiedID != Config.nodeID && specifiedID != ipfsid) return
         }
         let statops = {
             bw: (cb) => {
@@ -735,6 +749,7 @@ bot.on('message', (message) => {
                 embed.addField(Config.commandPrefix + 'hdwhitelist check', Config.HELP_WHITELIST_CHECK);
             }
 
+            embed.addField(Config.commandPrefix + 'myid', Config.HELP_IPFS_ID)
             embed.addField(Config.commandPrefix + 'stats [node ID]', Config.HELP_STATS)
             embed.addField(Config.commandPrefix + 'ipfshelp', Config.HELP_IPFSHELP);
             embed.addField(Config.commandPrefix + 'ping', Config.HELP_PING);
