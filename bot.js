@@ -9,6 +9,7 @@ const fs = require('fs');
 
 const bot = new Discord.Client();
 
+let whitelist = fs.readFileSync('HDWhitelist.txt','utf8')
 let usageData = JSON.parse(fs.readFileSync('usage.json','utf8'))
 let ipfsid;
 
@@ -38,28 +39,16 @@ bot.on('message', (message) => {
         message.channel.send(Config.PING_REPLY);
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs ')) {
         // Source video
-        if (Config.sdOnlyMode == true) {
-            sendMessage(message,Config.ERROR_SD_ONLY_MODE);
-            return;
-        }
+        if (Config.sdOnlyMode == true)
+            return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        if (Config.hdwhitelistEnabled == true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(message.author.id) != true) {
-                    // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
-                    return;
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
-                return;
-            }
-        }
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
 
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
+        let command = message.content
+        let steemitAuthorPermlink = command.split('/').slice(-2)
+        let author = steemitAuthorPermlink[0]
 
         if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
@@ -116,19 +105,9 @@ bot.on('message', (message) => {
             })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
-        if (Config.restrictedMode == true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(message.author.id) != true) {
-                    // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
-                    return;
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
-                return;
-            }
-        }
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
 
         // 240p video
         var command = message.content;
@@ -188,24 +167,14 @@ bot.on('message', (message) => {
             })            
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs480 ')) {
-        if (Config.restrictedMode == true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(message.author.id) != true) {
-                    // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED);
-                    return;
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
-                return;
-            }
-        }
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
 
         // 480p video
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
+        let command = message.content
+        let steemitAuthorPermlink = command.split('/').slice(-2)
+        let author = steemitAuthorPermlink[0]
 
         if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
@@ -261,28 +230,16 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs720 ')) {
         // 720p video
-        if (Config.sdOnlyMode == true) {
-            sendMessage(message,Config.ERROR_SD_ONLY_MODE);
-            return;
-        }
+        if (Config.sdOnlyMode == true)
+            return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        if (Config.hdwhitelistEnabled == true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(message.author.id) != true) {
-                    // Do not proceed if user is not in whitelist
-                    sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
-                    return;
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
-                return;
-            }
-        }
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
 
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
+        let command = message.content
+        let steemitAuthorPermlink = command.split('/').slice(-2)
+        let author = steemitAuthorPermlink[0]
 
         if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
@@ -338,30 +295,16 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs1080 ')) {
         // 1080p video
-        if (Config.sdOnlyMode == true) {
-            sendMessage(message,ERROR_SD_ONLY_MODE);
-            return;
-        }
-        
-        if (Config.hdwhitelistEnabled == true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(message.author.id) != true) {
-                    // Do not proceed if user is not in whitelist
-                    if (Config.restrictedMode == true) {
-                        sendMessage(message,Config.ERROR_NO_PIN_PERMISSION);
-                        return;
-                    }
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
-                return;
-            }
-        }
+        if (Config.sdOnlyMode == true)
+            return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+
+        let command = message.content
+        let steemitAuthorPermlink = command.split('/').slice(-2)
+        let author = steemitAuthorPermlink[0]
 
         if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
@@ -417,9 +360,13 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
         // DSound audio
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+            // Do not proceed if user is not in whitelist
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_AUDIO)
+
+        let command = message.content
+        let steemitAuthorPermlink = command.split('/').slice(-2)
+        let author = steemitAuthorPermlink[0]
 
         if (author.startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
@@ -427,15 +374,12 @@ bot.on('message', (message) => {
         }
 
         Steem.api.getContent(author,steemitAuthorPermlink[1],function(err,result) {
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
+            if (err != null)
+                return sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err)
 
             // Get JSON metadata of post
-            var jsonmeta = JSON.parse(result.json_metadata);
-
-            var dsoundhash = jsonmeta.audio.files.sound;
+            let jsonmeta = JSON.parse(result.json_metadata)
+            let dsoundhash = jsonmeta.audio.files.sound
 
             IPFS.pin.ls(dsoundhash,{ type: 'recursive' },(err,pinset) => {
                 if (err == null && pinset[0].hash === dsoundhash) {
@@ -546,33 +490,22 @@ bot.on('message', (message) => {
         }
     } else if (message.content == (Config.commandPrefix + 'hdwhitelist check')) {
         // Check if user is in whitelist
-        if (fs.existsSync('HDWhitelist.txt')) {
-            var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-            if (readList.includes(message.author.id) == true) {
-                replyMessage(message,Config.WHITELIST_TRUE);
-            } else {
-                replyMessage(message,Config.WHITELIST_FALSE);
-            }
+        if (whitelist.includes(message.author.id)) {
+            replyMessage(message,Config.WHITELIST_TRUE);
         } else {
-            message.channel.send(Config.WHITELIST_FILE404);
+            replyMessage(message,Config.WHITELIST_FALSE);
         }
     } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist add ')) {
         // Add user to whitelist
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
             let uidToWhitelist = message.mentions.members.first().user.id;
 
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(uidToWhitelist) == true) {
-                    sendMessage(message,Config.WHITELIST_ALREADY_IN);
-                    return;
-                }
-                fs.writeFileSync('HDWhitelist.txt', readList + uidToWhitelist + '\n');
-            } else {
-                fs.writeFileSync('HDWhitelist.txt', uidToWhitelist + '\n');
-            }
+            if (whitelist.includes(uidToWhitelist))
+                return sendMessage(message,Config.WHITELIST_ALREADY_IN)
 
-            sendMessage(message,'<@' + uidToWhitelist + '> ' + Config.WHITELIST_ADD_SUCCESS);
+            whitelist = whitelist + uidToWhitelist + '\n'
+            fs.writeFileSync('HDWhitelist.txt',whitelist)
+            sendMessage(message,'<@' + uidToWhitelist + '> ' + Config.WHITELIST_ADD_SUCCESS)
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
@@ -581,17 +514,13 @@ bot.on('message', (message) => {
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
             let uidToRemove = message.mentions.members.first().user.id;
 
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                if (readList.includes(uidToRemove) == true) {
-                    var newList = readList.replace(uidToRemove + '\n', '');
-                    fs.writeFileSync('HDWhitelist.txt', newList);
-                    sendMessage(message,'<@' + uidToRemove + '> ' + Config.WHITELIST_RM_SUCCESS);
-                } else {
-                    sendMessage(message,Config.WHITELIST_RM_UID404);
-                }
+            if (whitelist.includes(uidToRemove)) {
+                let newList = whitelist.replace(uidToRemove + '\n', '')
+                whitelist = newList
+                fs.writeFileSync('HDWhitelist.txt',whitelist)
+                sendMessage(message,'<@' + uidToRemove + '> ' + Config.WHITELIST_RM_SUCCESS)
             } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
+                sendMessage(message,Config.WHITELIST_RM_UID404)
             }
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
@@ -599,24 +528,19 @@ bot.on('message', (message) => {
     } else if (message.content == (Config.commandPrefix + 'hdwhitelist ls')) {
         // List all users in whitelist in DM
         if (message.member.hasPermission('ADMINISTRATOR') == true && Config.silentModeEnabled != true) {
-            if (fs.existsSync('HDWhitelist.txt')) {
-                var readList = fs.readFileSync('HDWhitelist.txt', 'utf8');
-                var uidListArray = readList.split('\n');
-    
-                for (var i = 0; i < uidListArray.length; i++) {
-                    uidListArray[i] = '<@' + uidListArray[i] + '>';
-                }
-    
-                var uidList = uidListArray.toString();
-                var finalListToDM = uidList.replace(/,/g, '\n');
-                finalListToDM = finalListToDM.slice(0,-4);
-                finalListToDM = 'Whitelisted users: \n' + finalListToDM;
-                if (Config.silentModeEnabled != true) {
-                    message.react('📬')
-                    message.member.send(finalListToDM);
-                }
-            } else {
-                sendMessage(message,Config.WHITELIST_FILE404);
+            let uidListArray = whitelist.split('\n')
+
+            for (var i = 0; i < uidListArray.length; i++) {
+                uidListArray[i] = '<@' + uidListArray[i] + '>'
+            }
+
+            let uidList = uidListArray.toString()
+            let finalListToDM = uidList.replace(/,/g, '\n')
+            finalListToDM = finalListToDM.slice(0,-4)
+            finalListToDM = 'Whitelisted users: \n' + finalListToDM
+            if (Config.silentModeEnabled != true) {
+                message.react('📬')
+                message.member.send(finalListToDM)
             }
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);

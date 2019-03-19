@@ -33,6 +33,7 @@
     "ERROR_SD_ONLY_MODE": "720p, 1080p and source IPFS pinning commands have been disabled.",
     "ERROR_NO_PERMISSION": "Sorry, you do not have the required permission to execute this command.",
     "ERROR_NO_PIN_PERMISSION": "Sorry, you're not in the whitelist, therefore you can't pin 720p, 1080p or source videos!",
+    "ERROR_NO_PIN_PERMISSION_AUDIO": "Sorry, you're not in the whitelist, therefore you can't pin audio files!",
     "ERROR_NO_PIN_PERMISSION_RESTRICTED": "Sorry, you're not in the whitelist, therefore you can't run any pinning commands!",
     "BOT_SOURCE": "__***View the source code of the bot on GitHub:***__\nhttps://github.com/techcoderx/DTube-IPFS-Bot",
     "HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN": "IPFS hash for specified resolution for this video is not found on the Steem blockchain.",
