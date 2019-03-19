@@ -30,15 +30,9 @@ Note: you may need increase the value of `--max_old_space_size` if several large
 
 Use the link below to invite the bot to your Discord server:
 
-`https://discordapp.com/oauth2/authorize?client_id=YOURCLIENTID&scope=bot&permissions=248897`
+`https://discordapp.com/oauth2/authorize?client_id=YOURCLIENTID&scope=bot`
 
 (where `YOURCLIENTID` is the client ID of your Discord application)
-
-#### To fetch all pinned files on IPFS node:
-
-The text file is set to be updated whenever each file is pinned, or an unpin script is run. However, you may run the command below if you need to update it manually:
-
-`ipfs pin ls -t recursive > Pinned/AllPinned.txt`
 
 # Unpinning IPFS files
 
@@ -52,7 +46,7 @@ You may choose to unpin all IPFS files that were downloaded by a user by doing t
 
 # Links support
 
-The Discord bot command supports `d.tube`, `dsound.audio`, `steemit.com` and `busy.org` links. However, this bot only supports DTube videos and DSound audios at the moment. More platform support coming in the next few updates.
+The Discord bot command supports all kinds of links of Steem frontends, such as `d.tube`, `dtube.network`, `dsound.audio`, `steemit.com` and `busy.org`. However, this bot only supports DTube videos and DSound audios at the moment. More platform support coming in the next few updates.
 
 # How to contribute
 
