@@ -42,9 +42,13 @@ bot.on('message', (message) => {
         if (Config.sdOnlyMode == true)
             return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
             // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            if (Config.restrictedMode)
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+            else
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+        }
 
         let command = message.content
         let steemitAuthorPermlink = command.split('/').slice(-2)
@@ -105,9 +109,9 @@ bot.on('message', (message) => {
             })
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id) && Config.restrictedMode)
             // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
 
         // 240p video
         var command = message.content;
@@ -167,9 +171,9 @@ bot.on('message', (message) => {
             })            
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs480 ')) {
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id) && Config.restrictedMode)
             // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
 
         // 480p video
         let command = message.content
@@ -233,9 +237,13 @@ bot.on('message', (message) => {
         if (Config.sdOnlyMode == true)
             return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
-            // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
+                // Do not proceed if user is not in whitelist
+                if (Config.restrictedMode)
+                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+                else
+                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            }
 
         let command = message.content
         let steemitAuthorPermlink = command.split('/').slice(-2)
@@ -298,9 +306,13 @@ bot.on('message', (message) => {
         if (Config.sdOnlyMode == true)
             return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
-            // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
+                // Do not proceed if user is not in whitelist
+                if (Config.restrictedMode)
+                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+                else
+                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+            }
 
         let command = message.content
         let steemitAuthorPermlink = command.split('/').slice(-2)
@@ -360,9 +372,13 @@ bot.on('message', (message) => {
         });
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfssound ')) {
         // DSound audio
-        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id))
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
             // Do not proceed if user is not in whitelist
-            return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_AUDIO)
+            if (Config.restrictedMode)
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+            else
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
+        }
 
         let command = message.content
         let steemitAuthorPermlink = command.split('/').slice(-2)
