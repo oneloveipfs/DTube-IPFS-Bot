@@ -2,7 +2,9 @@ const Config = require('./config.json');
 const Discord = require('discord.js');
 const WGET = require('wget-improved');
 const IPFS = require('ipfs-http-client')('localhost',Config.IPFS_API_Port,{protocol: 'http'})
+const isIPFS = require('is-ipfs')
 const Steem = require('steem');
+const jAvalon = require('javalon')
 const async = require('async')
 const Auth = require('./auth.json');
 const fs = require('fs');
@@ -50,41 +52,24 @@ bot.on('message', (message) => {
                 return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
         }
 
-        let command = message.content
-        let steemitAuthorPermlink = command.split('/').slice(-2)
-        let author = steemitAuthorPermlink[0]
-
-        if (author.startsWith('@')) {
+        let link = message.content.split(' ')[1]
+        let authorPermlink = link.split('/').splice(-2)
+        if (authorPermlink[0].startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
-            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+            authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
         }
         
-        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
-            
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
-            
-            // Get JSON metadata of post
-            let jsonmeta = JSON.parse(result.json_metadata)
+        getVideoHash(link,'Source',(err,hash) => {
+            if (err != null) return sendMessage(message,err)
 
-            // Get IPFS hash of source video file
-            let ipfshash = jsonmeta.video.content.videohash
-
-            if (ipfshash == undefined || null) {
-                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
-                return
-            }
-
-            IPFS.pin.ls(ipfshash,{ type: 'recursive' },(err,pinset) => {
-                if (err == null && pinset[0].hash === ipfshash) {
+            IPFS.pin.ls(hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === hash) {
                     message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
-                } else if (err == 'Error: path \'' + ipfshash + '\' is not pinned') {
-                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfshash;
+                } else if (err == 'Error: path \'' + hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + hash;
 
                     // Download file to server!
-                    let download = WGET.download(ipfslink,'./' + ipfshash);
+                    let download = WGET.download(ipfslink,'./' + hash);
 
                     download.on('error',function(err) {
                         // Download error
@@ -94,59 +79,44 @@ bot.on('message', (message) => {
                     download.on('start',function(filesize) {
                         // Get file size in MB
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
-                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
-                        addHashToDatabase(message,ipfshash);
-                        addDTubeVideoToIPFS(message,ipfshash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'Source');
+                        addHashToDatabase(message,hash);
+                        addDTubeVideoToIPFS(message,hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,authorPermlink[0],authorPermlink[1],'Source');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
                 }
             })
-        });
+        })
     } else if (message.content.startsWith(Config.commandPrefix + 'ipfs240 ')) {
         if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id) && Config.restrictedMode)
             // Do not proceed if user is not in whitelist
             return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
 
         // 240p video
-        var command = message.content;
-        var steemitAuthorPermlink = command.split('/').slice(-2);
-        var author = steemitAuthorPermlink[0];
-
-        if (author.startsWith('@')) {
+        let link = message.content.split(' ')[1]
+        let authorPermlink = link.split('/').splice(-2)
+        if (authorPermlink[0].startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
-            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+            authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
         }
         
-        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
-            
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
-            
-            // Get JSON metadata of post
-            let jsonmeta = JSON.parse(result.json_metadata);
-            let ipfs240hash = jsonmeta.video.content.video240hash;
+        getVideoHash(link,'240p',(err,hash) => {
+            if (err != null) return sendMessage(message,err)
 
-            if (ipfs240hash == undefined || null) {
-                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
-                return
-            }
-
-            IPFS.pin.ls(ipfs240hash,{ type: 'recursive' },(err,pinset) => {
-                if (err == null && pinset[0].hash === ipfs240hash) {
+            IPFS.pin.ls(hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === hash) {
                     message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
-                } else if (err == 'Error: path \'' + ipfs240hash + '\' is not pinned') {
-                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs240hash;
+                } else if (err == 'Error: path \'' + hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + hash;
 
                     // Download file to server!
-                    let download = WGET.download(ipfslink,'./' + ipfs240hash);
+                    let download = WGET.download(ipfslink,'./' + hash);
 
                     download.on('error',function(err) {
                         // Download error
@@ -156,14 +126,14 @@ bot.on('message', (message) => {
                     download.on('start',function(filesize) {
                         // Get file size in MB
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
-                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
-                        addHashToDatabase(message,ipfs240hash);
-                        addDTubeVideoToIPFS(message,ipfs240hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'240p');
+                        addHashToDatabase(message,hash);
+                        addDTubeVideoToIPFS(message,hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,authorPermlink[0],authorPermlink[1],'240p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -176,39 +146,24 @@ bot.on('message', (message) => {
             return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
 
         // 480p video
-        let command = message.content
-        let steemitAuthorPermlink = command.split('/').slice(-2)
-        let author = steemitAuthorPermlink[0]
-
-        if (author.startsWith('@')) {
+        let link = message.content.split(' ')[1]
+        let authorPermlink = link.split('/').splice(-2)
+        if (authorPermlink[0].startsWith('@')) {
             // Remove @ symbol if it is a steemit/busy link
-            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+            authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
         }
         
-        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
-            
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
-            
-            // Get JSON metadata of post
-            let jsonmeta = JSON.parse(result.json_metadata)
-            let ipfs480hash = jsonmeta.video.content.video480hash
+        getVideoHash(link,'480p',(err,hash) => {
+            if (err != null) return sendMessage(message,err)
 
-            if (ipfs480hash == undefined || null) {
-                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
-                return
-            }
-
-            IPFS.pin.ls(ipfs480hash,{ type: 'recursive' },(err,pinset) => {
-                if (err == null && pinset[0].hash === ipfs480hash) {
+            IPFS.pin.ls(hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === hash) {
                     message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
-                } else if (err == 'Error: path \'' + ipfs480hash + '\' is not pinned') {
-                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs480hash;
+                } else if (err == 'Error: path \'' + hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + hash;
 
                     // Download file to server!
-                    let download = WGET.download(ipfslink,'./' + ipfs480hash);
+                    let download = WGET.download(ipfslink,'./' + hash);
 
                     download.on('error',function(err) {
                         // Download error
@@ -218,14 +173,14 @@ bot.on('message', (message) => {
                     download.on('start',function(filesize) {
                         // Get file size in MB
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
-                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
-                        addHashToDatabase(message,ipfs480hash);
-                        addDTubeVideoToIPFS(message,ipfs480hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'480p');
+                        addHashToDatabase(message,hash);
+                        addDTubeVideoToIPFS(message,hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,authorPermlink[0],authorPermlink[1],'480p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -237,47 +192,32 @@ bot.on('message', (message) => {
         if (Config.sdOnlyMode == true)
             return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-            if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
-                // Do not proceed if user is not in whitelist
-                if (Config.restrictedMode)
-                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
-                else
-                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
-            }
-
-        let command = message.content
-        let steemitAuthorPermlink = command.split('/').slice(-2)
-        let author = steemitAuthorPermlink[0]
-
-        if (author.startsWith('@')) {
-            // Remove @ symbol if it is a steemit/busy link
-            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
+            // Do not proceed if user is not in whitelist
+            if (Config.restrictedMode)
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+            else
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
         }
-        
-        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
-            
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
-            
-            // Get JSON metadata of post
-            let jsonmeta = JSON.parse(result.json_metadata)
-            let ipfs720hash = jsonmeta.video.content.video720hash
 
-            if (ipfs720hash == undefined || null) {
-                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
-                return
-            }
+        let link = message.content.split(' ')[1]
+        let authorPermlink = link.split('/').splice(-2)
+        if (authorPermlink[0].startsWith('@')) {
+            // Remove @ symbol if it is a steemit/busy link
+            authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
+        }
+    
+        getVideoHash(link,'720p',(err,hash) => {
+            if (err != null) return sendMessage(message,err)
 
-            IPFS.pin.ls(ipfs720hash,{ type: 'recursive' },(err,pinset) => {
-                if (err == null && pinset[0].hash === ipfs720hash) {
+            IPFS.pin.ls(hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === hash) {
                     message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
-                } else if (err == 'Error: path \'' + ipfs720hash + '\' is not pinned') {
-                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs720hash;
+                } else if (err == 'Error: path \'' + hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + hash;
 
                     // Download file to server!
-                    let download = WGET.download(ipfslink,'./' + ipfs720hash);
+                    let download = WGET.download(ipfslink,'./' + hash);
 
                     download.on('error',function(err) {
                         // Download error
@@ -287,14 +227,14 @@ bot.on('message', (message) => {
                     download.on('start',function(filesize) {
                         // Get file size in MB
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
-                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
-                        addHashToDatabase(message,ipfs720hash);
-                        addDTubeVideoToIPFS(message,ipfs720hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'720p');
+                        addHashToDatabase(message,hash);
+                        addDTubeVideoToIPFS(message,hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,authorPermlink[0],authorPermlink[1],'720p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -306,47 +246,32 @@ bot.on('message', (message) => {
         if (Config.sdOnlyMode == true)
             return sendMessage(message,Config.ERROR_SD_ONLY_MODE)
 
-            if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
-                // Do not proceed if user is not in whitelist
-                if (Config.restrictedMode)
-                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
-                else
-                    return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
-            }
-
-        let command = message.content
-        let steemitAuthorPermlink = command.split('/').slice(-2)
-        let author = steemitAuthorPermlink[0]
-
-        if (author.startsWith('@')) {
-            // Remove @ symbol if it is a steemit/busy link
-            author = steemitAuthorPermlink[0].slice(1,steemitAuthorPermlink[0].length);
+        if (Config.hdwhitelistEnabled && !whitelist.includes(message.author.id)) {
+            // Do not proceed if user is not in whitelist
+            if (Config.restrictedMode)
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION_RESTRICTED)
+            else
+                return sendMessage(message,Config.ERROR_NO_PIN_PERMISSION)
         }
-        
-        Steem.api.getContent(author, steemitAuthorPermlink[1], function(err, result) {
-            
-            if (err != null) {
-                sendMessage(message,Config.ERROR_STEEM_GETCONTENT + err);
-                return;
-            }
-            
-            // Get JSON metadata of post
-            let jsonmeta = JSON.parse(result.json_metadata)
-            let ipfs1080hash = jsonmeta.video.content.video1080hash
 
-            if (ipfs1080hash == undefined || null) {
-                sendMessage(message,Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
-                return
-            }
+        let link = message.content.split(' ')[1]
+        let authorPermlink = link.split('/').splice(-2)
+        if (authorPermlink[0].startsWith('@')) {
+            // Remove @ symbol if it is a steemit/busy link
+            authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
+        }
+    
+        getVideoHash(link,'1080p',(err,hash) => {
+            if (err != null) return sendMessage(message,err)
 
-            IPFS.pin.ls(ipfs1080hash,{ type: 'recursive' },(err,pinset) => {
-                if (err == null && pinset[0].hash === ipfs1080hash) {
+            IPFS.pin.ls(hash,{ type: 'recursive' },(err,pinset) => {
+                if (err == null && pinset[0].hash === hash) {
                     message.channel.send(Config.ERROR_FILE_ALREADY_PINNED)
-                } else if (err == 'Error: path \'' + ipfs1080hash + '\' is not pinned') {
-                    var ipfslink = 'https://video.dtube.top/ipfs/' + ipfs1080hash;
+                } else if (err == 'Error: path \'' + hash + '\' is not pinned') {
+                    var ipfslink = 'https://video.dtube.top/ipfs/' + hash;
 
                     // Download file to server!
-                    let download = WGET.download(ipfslink,'./' + ipfs1080hash);
+                    let download = WGET.download(ipfslink,'./' + hash);
 
                     download.on('error',function(err) {
                         // Download error
@@ -356,14 +281,14 @@ bot.on('message', (message) => {
                     download.on('start',function(filesize) {
                         // Get file size in MB
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
-                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
+                        sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
                     });
 
                     download.on('end',function() {
                         // Adds ipfs hash to user database and pins file to IPFS node
-                        addHashToDatabase(message,ipfs1080hash);
-                        addDTubeVideoToIPFS(message,ipfs1080hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,author,steemitAuthorPermlink[1],'1080p');
+                        addHashToDatabase(message,hash);
+                        addDTubeVideoToIPFS(message,hash,Config.trickledag,Config.VIDEO_DOWNLOAD_COMPLETE,authorPermlink[0],authorPermlink[1],'1080p');
                     });
                 } else {
                     message.channel.send(Config.IPFS_PIN_LS_ERROR + err)
@@ -730,6 +655,101 @@ function replyMessage(msg,content) {
         console.log(content);
     } else {
         msg.reply(content);
+    }
+}
+
+function getVideoHash(link,resolution,cb) {
+    let authorPermlink = link.split('/').splice(-2)
+    if (authorPermlink[0].startsWith('@')) {
+        // Remove @ symbol if it is a steemit/busy link
+        authorPermlink[0] = authorPermlink[0].slice(1,authorPermlink[0].length)
+    }
+
+    if (link.startsWith('https://d.tube/') && isIPFS.cid(authorPermlink[1])) {
+        // DTube link provided
+        jAvalon.getContent(authorPermlink[0],authorPermlink[1],(err,res) => {
+            if (err) return cb(err)
+            if (res.json.providerName != 'IPFS') return cb(Config.ERROR_NON_IPFS_VIDEO)
+            switch (resolution) {
+                case "Source":
+                    if (res.json.ipfs.videohash != undefined || null)
+                        cb(null,res.json.ipfs.videohash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "240p":
+                    if (res.json.ipfs.video240hash != undefined || null)
+                        cb(null,res.json.ipfs.video240hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "480p":
+                    if (res.json.ipfs.video480hash != undefined || null)
+                        cb(null,res.json.ipfs.video480hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "720p":
+                    if (res.json.ipfs.video720hash != undefined || null)
+                        cb(null,res.json.ipfs.video720hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "1080p":
+                    if (res.json.ipfs.video1080hash != undefined || null)
+                        cb(null,res.json.ipfs.video1080hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                default:
+                    cb(Config.ERROR_INVALID_RESOLUTION)
+                    break
+            }
+        })
+    } else if (link.startsWith('https://d.tube/') && !isIPFS.cid(authorPermlink[1])) {
+        cb(Config.ERROR_NON_IPFS_VIDEO)
+    } else {
+        // Other Steem link provided
+        Steem.api.getContent(authorPermlink[0],authorPermlink[1],(err,res) => {
+            if (err) return cb(err)
+            let jsonmeta = JSON.parse(result.json_metadata)
+            if (jsonmeta.video.providerName != 'IPFS') return cb(Config.ERROR_NON_IPFS_VIDEO)
+            switch (resolution) {
+                case "Source":
+                    if (jsonmeta.video.ipfs.videohash != undefined || null)
+                        cb(null,jsonmeta.video.ipfs.videohash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "240p":
+                    if (jsonmeta.video.ipfs.video240hash != undefined || null)
+                        cb(null,jsonmeta.video.ipfs.video240hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "480p":
+                    if (jsonmeta.video.ipfs.video480hash != undefined || null)
+                        cb(null,jsonmeta.video.ipfs.video480hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "720p":
+                    if (jsonmeta.video.ipfs.video720hash != undefined || null)
+                        cb(null,jsonmeta.video.ipfs.video720hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                case "1080p":
+                    if (jsonmeta.video.ipfs.video1080hash != undefined || null)
+                        cb(null,jsonmeta.video.ipfs.video1080hash)
+                    else
+                        cb(Config.HASH_NOT_FOUND_ON_STEEM_BLOCKCHAIN)
+                    break
+                default:
+                    cb(Config.ERROR_INVALID_RESOLUTION)
+                    break
+            }
+        })
     }
 }
 

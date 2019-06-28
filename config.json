@@ -25,6 +25,8 @@
     "ERROR_PREFIX404": "No command prefix provided. Terminating bot...",
     "ERROR_STEEM_GETCONTENT": "Steem Error: ",
     "ERROR_DOWNLOAD": "Error downloading file: ",
+    "ERROR_NON_IPFS_VIDEO": "Video link provided must be an IPFS upload!",
+    "ERROR_INVALID_RESOLUTION": "Invalid resolution specified!",
     "ERROR_INVALID_CURRENCY": "Invalid currency entered!",
     "ERROR_INVALID_AMOUNT": "Invalid amount entered!",
     "ERROR_COMMUNITYACCOUNT_NOTSET": "Discord community account not set yet!",
