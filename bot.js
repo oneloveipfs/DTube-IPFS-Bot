@@ -712,7 +712,7 @@ function getVideoHash(link,resolution,cb) {
         // Other Steem link provided
         Steem.api.getContent(authorPermlink[0],authorPermlink[1],(err,res) => {
             if (err) return cb(err)
-            let jsonmeta = JSON.parse(result.json_metadata)
+            let jsonmeta = JSON.parse(res.json_metadata)
             if (jsonmeta.video.providerName != 'IPFS') return cb(Config.ERROR_NON_IPFS_VIDEO)
             switch (resolution) {
                 case "Source":
