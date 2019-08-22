@@ -11,6 +11,10 @@
     "donationsAccepted": true,
     "commandPrefix": "!",
     "nodeID": 1,
+    "usageWebhook": {
+        "enabled": true,
+        "url": "http://localhost:3000/botusage"
+    },
 
     "___BotOutputMessage___": "Insert bot message output here",
     "PING_REPLY": "Pong!",

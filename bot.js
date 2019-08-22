@@ -6,6 +6,7 @@ const isIPFS = require('is-ipfs')
 const Steem = require('steem');
 const jAvalon = require('javalon')
 const async = require('async')
+const axios = require('axios')
 const Auth = require('./auth.json');
 const fs = require('fs');
 
@@ -82,6 +83,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_SOURCE + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -129,6 +131,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_240P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -176,6 +179,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_480P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -230,6 +234,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_720P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -284,6 +289,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.VIDEO_DOWNLOAD_MESSAGE_1080P + '\nAuthor: ' + authorPermlink[0] + '\nPermlink: ' + authorPermlink[1] + '\nVideo file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -342,6 +348,7 @@ bot.on('message', (message) => {
                         let humanreadableFS = (filesize / 1048576).toFixed(2)
                         sendMessage(message,Config.AUDIO_DOWNLOAD_MESSAGE + '\nAuthor: ' + author + '\nPermlink: ' + steemitAuthorPermlink[1] + '\nAudio file size: ' + humanreadableFS + 'MB\n');
                         countUsage(message.author.id,filesize)
+                        sendUsageWebhook(regUsers[message.author.id],usageData[message.author.id])
                     });
 
                     download.on('end',function() {
@@ -844,6 +851,18 @@ function countUsage(userid,filesize) {
     fs.writeFile('usage.json',JSON.stringify(usageData,null,4),(err) => {
         if (err != null)
             console.log(err)
+    })
+}
+
+function sendUsageWebhook(user,size) {
+    if (Config.usageWebhook.enabled === true) axios.post(Config.usageWebhook.url,{
+        token: Auth.webhookKey,
+        username: user,
+        size: size 
+    }).then((webhookres) => {
+
+    }).catch((err) => {
+        console.log(err.data)
     })
 }
 
