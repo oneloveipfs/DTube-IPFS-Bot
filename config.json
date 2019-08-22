@@ -75,5 +75,8 @@
     "ADMIN_HELP_LIST": "Shows this cheatsheet with all commands available to admins only for this bot.",
     "REFRESH_PINS_ALERT": "Pinned hashes list has been refreshed successfully!",
     "STEEM_REG_SUCCESS": " has been registered successfully!",
-    "STEEM_UNREG_SUCCESS": "Steem account has been unregistered successfully!"
+    "STEEM_UNREG_SUCCESS": "Steem account has been unregistered successfully!",
+    "STEEM_NAME_NOT_REGISTERED": "Steem account name registration for Discord account is not found.",
+    "STEEM_NAME_REGISTERED": "Registered Steem account name: ",
+    "NO_ONE_MENTIONED": "No one has been mentioned. Who do you mean:question:"
 }

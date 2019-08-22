@@ -499,10 +499,12 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
-    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist reg ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'reg ')) {
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            if (!message.mentions.members.first()) return sendMessage(message,Config.NO_ONE_MENTIONED)
+            else if (!message.content.split(' ')[2]) return sendMessage(message,Config.ERROR_STEEM_NAME_NOT_SPECIFIED)
             let uidToReg = message.mentions.members.first().user.id
-            let steemNameToReg = message.content.split(' ')[3].toLowerCase().replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '')
+            let steemNameToReg = message.content.split(' ')[2].toLowerCase().replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '')
             if (steemNameToReg != undefined) {
                 // Register Steem username with associated Discord account
                 if (steemNameToReg.length <= 3 || steemNameToReg.length >= 16)
@@ -519,7 +521,7 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
-    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist unreg ')) {
+    } else if (message.content.startsWith(Config.commandPrefix + 'unreg ')) {
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
             let uidToUnReg = message.mentions.members.first().user.id
             regUsers[uidToUnReg] = undefined
@@ -528,6 +530,16 @@ bot.on('message', (message) => {
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
+    } else if (message.content.startsWith(Config.commandPrefix + 'regcheck')) {
+        let uidToCheck = message.author.id
+        // Someone else is mentioned
+        if (message.mentions.members.first())
+            uidToCheck = message.mentions.members.first().user.id
+            
+        if (regUsers[uidToCheck] == undefined)
+            return sendMessage(message,Config.STEEM_NAME_NOT_REGISTERED)
+        else
+            return sendMessage(message,Config.STEEM_NAME_REGISTERED + regUsers[uidToCheck])
     } else if (message.content == (Config.commandPrefix + 'myid')) {
         let idEmbed = new Discord.RichEmbed()
         idEmbed.setDescription(Config.IPFS_ID_MESSAGE_PREFIX + ipfsid)
