@@ -13,6 +13,7 @@ const bot = new Discord.Client();
 
 let whitelist = fs.readFileSync('HDWhitelist.txt','utf8')
 let usageData = JSON.parse(fs.readFileSync('usage.json','utf8'))
+let regUsers = JSON.parse(fs.readFileSync('regusers.json','utf8'))
 let ipfsid;
 
 Steem.api.setOptions({url: Config.steemAPIURL});
@@ -439,11 +440,23 @@ bot.on('message', (message) => {
     } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist add ')) {
         // Add user to whitelist
         if (message.member.hasPermission('ADMINISTRATOR') == true) {
-            let uidToWhitelist = message.mentions.members.first().user.id;
+            let uidToWhitelist = message.mentions.members.first().user.id
+            let steemNameToReg = message.content.split(' ')[3].toLowerCase().replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '')
 
             if (whitelist.includes(uidToWhitelist))
                 return sendMessage(message,Config.WHITELIST_ALREADY_IN)
 
+            if (steemNameToReg != undefined) {
+                // Register Steem username with associated Discord account
+                if (steemNameToReg.length <= 3 || steemNameToReg.length >= 16)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'Length must be between 3 to 16 characters.')
+                if (/[a-z]/.test(steemNameToReg[0]) == false)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'First character must be a letter.')
+                if (/[a-z0-9]/.test(steemNameToReg[steemNameToReg.length - 1]) == false)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'Last character must be a letter or a number.')
+                regUsers[uidToWhitelist] = steemNameToReg
+                fs.writeFileSync('regusers.json',JSON.stringify(regUsers))
+            }
             whitelist = whitelist + uidToWhitelist + '\n'
             fs.writeFileSync('HDWhitelist.txt',whitelist)
             sendMessage(message,'<@' + uidToWhitelist + '> ' + Config.WHITELIST_ADD_SUCCESS)
@@ -483,6 +496,35 @@ bot.on('message', (message) => {
                 message.react('📬')
                 message.member.send(finalListToDM)
             }
+        } else {
+            sendMessage(message,Config.ERROR_NO_PERMISSION);
+        }
+    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist reg ')) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            let uidToReg = message.mentions.members.first().user.id
+            let steemNameToReg = message.content.split(' ')[3].toLowerCase().replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '')
+            if (steemNameToReg != undefined) {
+                // Register Steem username with associated Discord account
+                if (steemNameToReg.length <= 3 || steemNameToReg.length >= 16)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'Length must be between 3 to 16 characters.')
+                if (/[a-z]/.test(steemNameToReg[0]) == false)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'First character must be a letter.')
+                if (/[a-z0-9]/.test(steemNameToReg[steemNameToReg.length - 1]) == false)
+                    return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'Last character must be a letter or a number.')
+                regUsers[uidToReg] = steemNameToReg
+                fs.writeFileSync('regusers.json',JSON.stringify(regUsers))
+                sendMessage(message,steemNameToReg + Config.STEEM_REG_SUCCESS)
+            } else
+                sendMessage(message,Config.ERROR_STEEM_NAME_NOT_SPECIFIED)
+        } else {
+            sendMessage(message,Config.ERROR_NO_PERMISSION);
+        }
+    } else if (message.content.startsWith(Config.commandPrefix + 'hdwhitelist unreg ')) {
+        if (message.member.hasPermission('ADMINISTRATOR') == true) {
+            let uidToUnReg = message.mentions.members.first().user.id
+            regUsers[uidToUnReg] = undefined
+            fs.writeFileSync('regusers.json',JSON.stringify(regUsers))
+            sendMessage(message,Config.STEEM_UNREG_SUCCESS)
         } else {
             sendMessage(message,Config.ERROR_NO_PERMISSION);
         }
