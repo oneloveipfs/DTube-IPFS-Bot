@@ -455,7 +455,7 @@ bot.on('message', (message) => {
 
             if (steemNameToReg != undefined) {
                 // Register Steem username with associated Discord account
-                if (steemNameToReg.length <= 3 || steemNameToReg.length >= 16)
+                if (steemNameToReg.length < 3 || steemNameToReg.length > 16)
                     return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'Length must be between 3 to 16 characters.')
                 if (/[a-z]/.test(steemNameToReg[0]) == false)
                     return sendMessage(message,Config.ERROR_INVALID_STEEM_NAME + 'First character must be a letter.')
