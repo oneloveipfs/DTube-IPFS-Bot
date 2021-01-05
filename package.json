@@ -6,7 +6,7 @@
   "author": "techcoderx",
   "dependencies": {
     "async": "^2.6.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "discord.js": "^11.5.1",
     "fs": "0.0.1-security",
     "ipfs-http-client": "^29.1.1",
