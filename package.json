@@ -9,7 +9,7 @@
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
     "fs": "0.0.1-security",
-    "ipfs-http-client": "^29.1.1",
+    "ipfs-http-client": "^30.1.0",
     "is-ipfs": "^0.6.1",
     "javalon": "^1.0.16",
     "steem": "^0.7.5",
