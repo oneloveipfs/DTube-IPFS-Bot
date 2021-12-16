@@ -1,3 +1,5 @@
+### **⚠️ This repository has been depreciated. All functionalities of the Discord bot will be bundled into OneLoveIPFS v3 release. ⚠️**
+
 # DTube IPFS Discord Bot
 
 DTube IPFS Discord bot enables Discord server members to obtain the IPFS hash of a DTube video at a specified resolution, fetches the video and pins video to local IPFS node (where this bot is hosted). Also pins DSound audio files.
